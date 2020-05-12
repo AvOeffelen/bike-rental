@@ -10,3 +10,16 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+
+.idea/
+
+package-lock.json
+
+composer.lock
+
+public/js/dashmix.app.js
+public/js/*
+public/css/*
+public/fonts/*
+public/media/*
+public/mix-manifest.json
