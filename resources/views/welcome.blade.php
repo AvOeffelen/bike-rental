@@ -9,7 +9,7 @@
                 <nav class="flex-sm-00-auto ml-sm-3" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">App</li>
-                        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                        <li class="breadcrumb-item active" aria-current="page">Dashbxoard</li>
                     </ol>
                 </nav>
             </div>
@@ -23,7 +23,7 @@
             <div class="col-md-6 col-xl-5">
                 <div class="block block-rounded block-bordered">
                     <div class="block-header block-header-default">
-                        <h3 class="block-title">Welcome to your app</h3>
+                        <h3 class="block-title">Welcome {{auth()->user()->name}}</h3>
                     </div>
                     <div class="block-content">
                         <p>

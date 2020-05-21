@@ -1,17 +1,42 @@
 
 // Import global dependencies
 import './bootstrap';
+require('../polyfills');
+
 
 window.Vue = require('vue');
+import Multiselect from 'vue-multiselect'
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 // Vue.component('test',require('../components/Test.vue').default);
+Vue.component('bicycle-index',require('../components/bicycles/bicycleIndex.vue').default);
+Vue.component('pagination', require('laravel-vue-pagination'));
+Vue.component('repair-index',require('../components/repair/repairIndex').default);
+Vue.component('bicycle-timeline',require('../components/bicycles/timeline/bicycleTimeline').default);
+Vue.component('company-index',require('../components/company/CompanyIndex').default);
+Vue.component('profile-edit',require('../components/profile/profileEdit').default);
+Vue.component('sign-up',require('../components/auth/signup').default);
+Vue.component('multiselect',Multiselect);
+
+import {BootstrapVue, IconsPlugin} from 'bootstrap-vue';
+Vue.use(BootstrapVue);
+
+Vue.filter('truncate', function (text, length, suffix) {
+    if (text.length > length) {
+        return text.substring(0, length) + suffix;
+    } else {
+        return text;
+    }
+});
+
 
 
 const app = new Vue({
     el: '#main-container',
+    components: {
+    },
 });
 
 
@@ -19,6 +44,7 @@ const app = new Vue({
 import Tools from './modules/tools';
 import Helpers from './modules/helpers';
 import Template from './modules/template';
+import {from} from "bootstrap-vue/esm/utils/array";
 
 // App extends Template
 export default class App extends Template {

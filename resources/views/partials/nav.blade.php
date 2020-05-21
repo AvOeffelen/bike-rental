@@ -5,7 +5,7 @@
             <!-- Logo -->
             <a class="link-fx font-w600 font-size-lg text-white" href="/">
                             <span class="smini-visible">
-                                <span class="text-white-75">D</span><span class="text-white">x</span>
+                                <span class="text-white-75">{{config('app.name')}}</span>
                             </span>
                 <span class="smini-hidden">
                                 <span class="text-white-75">{{config('app.name')}}</span>
@@ -42,39 +42,49 @@
                 <a class="nav-main-link{{ request()->is('dashboard') ? ' active' : '' }}" href="/dashboard">
                     <i class="nav-main-link-icon si si-cursor"></i>
                     <span class="nav-main-link-name">Dashboard</span>
-                    <span class="nav-main-link-badge badge badge-pill badge-success">5</span>
+{{--                    <span class="nav-main-link-badge badge badge-pill badge-success">5</span>--}}
                 </a>
             </li>
-            <li class="nav-main-heading">Various</li>
-            <li class="nav-main-item{{ request()->is('pages/*') ? ' open' : '' }}">
-                <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="true" href="#">
-                    <i class="nav-main-link-icon si si-bulb"></i>
-                    <span class="nav-main-link-name">Examples</span>
+            <li class="nav-main-item">
+                <a class="nav-main-link{{ request()->is('company') ? ' active' : '' }}" href="{{url('company')}}">
+                    <i class="nav-main-link-icon fa fa-building"></i>
+                    <span class="nav-main-link-name">Bedrijven</span>
+{{--                    <span class="nav-main-link-badge badge badge-pill badge-success">5</span>--}}
+                </a>
+            </li>
+{{--            <li class="nav-main-item">--}}
+{{--                <a class="nav-main-link{{ request()->is('repair') ? ' active' : '' }}" href="{{url('repair')}}">--}}
+{{--                    <i class="nav-main-link-icon si si-wrench"></i>--}}
+{{--                    <span class="nav-main-link-name">Repair</span>--}}
+{{--                    <span class="nav-main-link-badge badge badge-pill badge-success">5</span>--}}
+{{--                </a>--}}
+{{--            </li>--}}
+            <li class="nav-main-item">
+                <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                    <i class="nav-main-link-icon fa fa-bicycle"></i>
+                    <span class="nav-main-link-name">Fietsen</span>
                 </a>
                 <ul class="nav-main-submenu">
                     <li class="nav-main-item">
-                        <a class="nav-main-link{{ request()->is('pages/datatables') ? ' active' : '' }}" href="/pages/datatables">
-                            <span class="nav-main-link-name">DataTables</span>
+                        <a class="nav-main-link{{ request()->is('bicycles') ? ' active' : '' }}" href="{{url('bicycles')}}">
+                            <i class="nav-main-link-icon fa fa-list"></i>
+                            <span class="nav-main-link-name">Overzicht</span>
+                            <span class="nav-main-link-badge badge badge-pill badge-primary">5</span>
                         </a>
                     </li>
                     <li class="nav-main-item">
-                        <a class="nav-main-link{{ request()->is('pages/slick') ? ' active' : '' }}" href="/pages/slick">
-                            <span class="nav-main-link-name">Slick Slider</span>
+                        <a class="nav-main-link{{ request()->is('repair') ? ' active' : '' }}" href="{{url('repair')}}">
+                            <i class="nav-main-link-icon fa fa-wrench"></i>
+                            <span class="nav-main-link-name">Reparaties</span>
                         </a>
                     </li>
                     <li class="nav-main-item">
-                        <a class="nav-main-link{{ request()->is('pages/blank') ? ' active' : '' }}" href="/pages/blank">
-                            <span class="nav-main-link-name">Blank</span>
+                        <a class="nav-main-link{{ request()->is('bicycle/timeline') ? ' active' : '' }}" href="{{url('bicycle/timeline')}}">
+                            <i class="nav-main-link-icon fa fa-wrench"></i>
+                            <span class="nav-main-link-name">Fiets historie</span>
                         </a>
                     </li>
                 </ul>
-            </li>
-            <li class="nav-main-heading">More</li>
-            <li class="nav-main-item">
-                <a class="nav-main-link" href="/">
-                    <i class="nav-main-link-icon si si-globe"></i>
-                    <span class="nav-main-link-name">Landing</span>
-                </a>
             </li>
         </ul>
     </div>
