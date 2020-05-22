@@ -23,7 +23,7 @@
             <div class="col-md-6 col-xl-5">
                 <div class="block block-rounded block-bordered">
                     <div class="block-header block-header-default">
-                        <h3 class="block-title">Welcome {{auth()->user()->name}}</h3>
+                        <h3 class="block-title">Welcome @if(auth()->check()){{auth()->user()->name}}@endif</h3>
                     </div>
                     <div class="block-content">
                         <p>

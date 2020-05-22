@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Axios\Owner;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\InviteController;
+use App\Model\Location;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -35,17 +36,22 @@ class CompanyController extends Controller
         ],$messages);
 
 
-        $userData = $request['contact'];
-        //TODO:: create account for user
-
-        /*
-         * Location data will be used to pass Location ids in a json to the invite controller.
-         * So that we know what locations are for the invite.
-         */
-
         $locationData = [];
+
+        //TODO:: change street in vue to adress
+        foreach($request['locations'] as $index => $location){
+            $location = Location::create([
+                'name' => $location['name'],
+                'address' => $location['street'],
+                'number' => $location['number'],
+                'postalcode' => $location['postalcode']
+            ]);
+            array_push($locationData,$location->id);
+        }
+
+
         $invite = new InviteController();
-        $invite->createInvite($locationData);
+        $invite->createInvite(json_encode($locationData));
 
 
 

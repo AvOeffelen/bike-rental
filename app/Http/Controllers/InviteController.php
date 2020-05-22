@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 
 class InviteController extends Controller
 {
-    public function createInvite()
+    public function createInvite($locationData)
     {
         $code = $this->codeGenerator();
 
-        $this->store($code);
+        $this->store($code,$locationData);
         return $code;
     }
 
@@ -25,9 +25,10 @@ class InviteController extends Controller
         return $randomString;
     }
 
-    private function store($code){
+    private function store($code,$data){
         return Invite::create([
-            'code' => $code
+            'code' => $code,
+            'data' => $data
         ]);
     }
 }

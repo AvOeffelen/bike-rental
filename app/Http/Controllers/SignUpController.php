@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\Invite;
+use App\Model\Location;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -22,13 +23,15 @@ class SignUpController extends Controller
 
     public function finishSignUp(Request $request,Invite $invite)
     {
+
         if($invite->used === 1){
             return redirect()->back();
         }
         $this->validator($request);
         $user = $this->createUser($request->all());
 
-//        $this->linkLocationToUser($locationData,$user);
+
+        $this->linkLocationToUser(json_decode($invite->data),$user);
 
         Auth::loginUsingId($user->id);
         $this->updateInvite($invite);
@@ -63,7 +66,8 @@ class SignUpController extends Controller
     //TODO:: Link the locations to user.
     protected function linkLocationToUser($locations,User $user){
 
-        return ;
+        $locations = Location::where('id',$locations)->get();
+        dd($locations);
     }
 
     protected function updateInvite(Invite $invite){

@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('phone');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('type');
+            $table->string('type')->default('location_manager');
             $table->rememberToken();
             $table->timestamps();
         });

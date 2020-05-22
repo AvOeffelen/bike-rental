@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Model\Location;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -39,7 +40,7 @@ class User extends Authenticatable
 
     const OWNER_TYPE = 'owner';
     const ADMIN_TYPE = 'admin';
-    const LOCATION_MANAGER = 'location';
+    const LOCATION_MANAGER = 'location_manager';
     //Created this just in case mechanic have different behaviours
     const MECHANIC_TYPE = 'mechanic';
 
@@ -63,6 +64,11 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->type === self::ADMIN_TYPE;
+    }
+
+    public function Location()
+    {
+        return $this->hasMany(Location::class);
     }
 
 }
