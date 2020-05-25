@@ -1,14 +1,8 @@
 <template>
-<!--    TODO:: remove this at all.-->
     <div>
-        <company-create></company-create>
         <div class="block">
             <div class="block-header block-header-default">
                 <h3 class="block-title">Locaties</h3>
-                <div class="text-right">
-                    <b-button variant="block-option" class="btn-block-option" data-toggle="block-option"
-                              data-action="content_toggle"></b-button>
-                </div>
             </div>
             <div class="block-content">
                 <div v-if="this.loading == true" class="text-center">
@@ -19,14 +13,24 @@
                 <table class="table table-striped table-borderless table-vcenter" v-else>
                     <thead class="bg-primary-dark text-light">
                     <tr>
-                        <th style="width: 33%;">Naam</th>
-                        <thd></thd>
-                        <th style="width: 200px;" class="text-center">Acties</th>
+                        <th style="width: 33%;">naam</th>
+                        <th class="d-none d-sm-table-cell">aantal fietsen</th>
+                        <th style="width: 200px;" class="text-center">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(location,index) in this.locations" :key="index">
-                            <td></td>
+                            <td class="d-none d-sm-table-cell">
+                                {{location.name}}
+                            </td>
+                            <td class="d-none d-sm-table-cell">
+                                {{location.bicycle_count}}
+                            </td>
+                            <td class="text-right">
+                                <b-button variant="light" size="sm" class="btn-light">
+                                    <i class="fa fa-fw fa-search text-primary"></i>
+                                </b-button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -36,31 +40,23 @@
 </template>
 
 <script>
-    import CompanyCreate from "./CompanyCreate";
     export default {
-        name: "CompanyIndex",
-        components: {CompanyCreate},
+        name: "LocationIndex",
         data(){
             return{
+                locations:[],
                 loading:true,
-                locations:[]
             };
         },
         created() {
-            setTimeout( ()=>{
-                this.loading = false;
-            },5000)
-        },
-        mounted(){
-            this.$root.$on('updateLocations',(locations)=>{
-                this.updateLocationsList(locations);
-            });
+            this.getLocations();
         },
         methods:{
-            updateLocationsList(locations){
-                for(let x in locations){
-                    this.locations.push(locations[x]);
-                }
+            getLocations(){
+                axios.get('axios/location/get').then(response => {
+                    this.locations = response.data
+                    this.loading = false;
+                })
             }
         }
     }

@@ -15,4 +15,6 @@ class BicycleController extends Controller
         $bicycles = Bicycle::all();
         return $bicycles;
     }
+
+
 }

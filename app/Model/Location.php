@@ -16,4 +16,9 @@ class Location extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function Bicycle()
+    {
+        return $this->hasMany(Bicycle::class);
+    }
 }

@@ -25,7 +25,6 @@ class CreateBicycleRepairTable extends Migration
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *

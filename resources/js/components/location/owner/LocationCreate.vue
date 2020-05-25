@@ -3,7 +3,7 @@
 
         <div class="block">
             <div class="block-header block-header-default">
-                <h3 class="block-title">Voeg ... toe</h3>
+                <h3 class="block-title">Voeg locatie(s) toe</h3>
                 <div class="text-right">
                     <b-button variant="block-option" class="btn-block-option" data-toggle="block-option"
                               data-action="content_toggle"></b-button>
@@ -146,7 +146,7 @@
                         </b-col>
                         <b-col md="8">
                             <label>Straat</label>
-                            <b-input v-model="location.street"
+                            <b-input v-model="location.address"
                                      class="form-control input-field"
                                      rows="4"
                                      placeholder="">
@@ -169,15 +169,15 @@
                             </b-input>
                         </b-col>
 <!--                        TODO::Add this to the locations overview so the owners can easily make a workplace-->
-<!--                        <b-col md="12">-->
-<!--                            <span>-->
-<!--                                <div class="form-check">-->
-<!--                                    <span>-->
-<!--                                        <b-form-checkbox class="form-check-input" type="checkbox" v-model="company.locations.is_workplace" id="example-checkbox-default1" label="Dit is een werkplaats" name="example-checkbox-default1">Dit is een werkplaats</b-form-checkbox>-->
-<!--                                    </span>-->
-<!--                                </div>-->
-<!--                            </span>-->
-<!--                        </b-col>-->
+                        <b-col md="12">
+                            <span>
+                                <div class="form-check">
+                                    <span>
+                                        <b-form-checkbox class="form-check-input" type="checkbox" v-model="company.is_workplace" id="example-checkbox-default1" label="Dit is een werkplaats" name="example-checkbox-default1">Dit is een werkplaats</b-form-checkbox>
+                                    </span>
+                                </div>
+                            </span>
+                        </b-col>
                     </b-row>
                     <b-row class="py-4">
                         <b-col sm="12" xl="12" md="12" lg="12" class="pr-2">
@@ -198,12 +198,34 @@
 </template>
 
 <script>
+    function formInitialState() {
+        return {
+            is_workplace:false,
+            contact: {
+                name: "",
+                name_addition: '',
+                lastname: "",
+                email: "",
+                phone: '',
+            },
+            locations: [
+                {
+                    name: '',
+                    address: '',
+                    number: '',
+                    postalcode: '',
+                }
+            ]
+        };
+    }
+
     export default {
-        name: "CompanyCreate",
+        name: "LocationCreate",
         data() {
             return {
                 loading: true,
                 company: {
+                    is_workplace:false,
                     contact: {
                         name: "",
                         name_addition: '',
@@ -214,10 +236,9 @@
                     locations: [
                         {
                             name: '',
-                            street: '',
+                            address: '',
                             number: '',
                             postalcode: '',
-                            is_workplace:false
                         }
                     ]
                 },
@@ -231,26 +252,26 @@
         },
         methods: {
             resetForm() {
-
+                Object.assign(this.company, formInitialState());
             },
             submit() {
                 axios.post('axios/company/post', this.company)
                     .then(response => {
                         this.$root.$emit('updateLocations', response.data);
+                        Object.assign(this.company, formInitialState());
                     })
                     .catch(error => {
                         console.log(error);
-                        if (error.response.status === 422) {
+                        if (error.response.status == 422) {
                             this.errors = error.response.data.errors;
                         }
                     });
-                ;
             },
             addExtraLocation(index) {
                 console.log("clicked", this.company);
                 let newx = {
                     name: '',
-                    street: '',
+                    address: '',
                     number: '',
                     postalcode: '',
                 };

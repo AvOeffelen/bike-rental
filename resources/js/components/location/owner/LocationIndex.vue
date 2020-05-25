@@ -1,7 +1,6 @@
 <template>
-<!--    TODO:: remove this at all.-->
     <div>
-        <company-create></company-create>
+        <location-create></location-create>
         <div class="block">
             <div class="block-header block-header-default">
                 <h3 class="block-title">Locaties</h3>
@@ -20,14 +19,22 @@
                     <thead class="bg-primary-dark text-light">
                     <tr>
                         <th style="width: 33%;">Naam</th>
-                        <thd></thd>
+                        <th>Aantal fietsen</th>
                         <th style="width: 200px;" class="text-center">Acties</th>
                     </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(location,index) in this.locations" :key="index">
-                            <td></td>
-                        </tr>
+                    <tr v-for="(location,index) in this.locations" :key="index">
+                        <td>{{location.name}}</td>
+                        <td>TBD</td>
+                        <td>
+                            <div class="text-right">
+                                <b-button variant="light" size="sm" class="btn-light">
+                                    <i class="fa fa-fw fa-search text-primary"></i>
+                                </b-button>
+                            </div>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -36,10 +43,10 @@
 </template>
 
 <script>
-    import CompanyCreate from "./CompanyCreate";
+    import LocationCreate from "./LocationCreate";
     export default {
-        name: "CompanyIndex",
-        components: {CompanyCreate},
+        name: "LocationIndex",
+        components: {LocationCreate},
         data(){
             return{
                 loading:true,
@@ -49,6 +56,7 @@
         created() {
             setTimeout( ()=>{
                 this.loading = false;
+                this.getLocations();
             },5000)
         },
         mounted(){
@@ -61,6 +69,12 @@
                 for(let x in locations){
                     this.locations.push(locations[x]);
                 }
+            },
+            getLocations(){
+                axios.get('axios/location/get').then(response => {
+                    this.locations = response.data
+                    this.loading = false;
+                })
             }
         }
     }

@@ -44,7 +44,7 @@ class User extends Authenticatable
     //Created this just in case mechanic have different behaviours
     const MECHANIC_TYPE = 'mechanic';
 
-    
+
     public function isOwner()
     {
         return $this->type === self::OWNER_TYPE;
@@ -68,7 +68,7 @@ class User extends Authenticatable
 
     public function Location()
     {
-        return $this->hasMany(Location::class);
+        return $this->hasMany(Location::class,'managed_by');
     }
 
 }

@@ -16,13 +16,13 @@ class CreateLocationTable extends Migration
         Schema::create('location', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('managed_by')->nullable();
-
             $table->foreign('managed_by')
                 ->references('id')->on('users');
             $table->string('name');
             $table->string('address');
             $table->string('number');
             $table->string('postalcode');
+            $table->tinyInteger('is_workplace')->default(0);
             $table->timestamps();
         });
     }

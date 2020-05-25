@@ -1,4 +1,5 @@
 <template>
+    <!--    TODO:: remove this at all.-->
     <div>
         <b-modal class="modal-dialog modal-dialog-pop-in mb-0 modal-backdrop" v-model="modal" v-if="initModal == true" @hidden="closeModal" size="lg">
             <template v-slot:modal-header >

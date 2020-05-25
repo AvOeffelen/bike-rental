@@ -51,7 +51,6 @@ class SignUpController extends Controller
             'phone' => 'required|digits_between:9,15',
         ],$message);
     }
-    //TODO:: Create user
     protected function createUser($data){
         return User::create([
             'name' => $data['name'],
@@ -63,16 +62,19 @@ class SignUpController extends Controller
         ]);
     }
 
-    //TODO:: Link the locations to user.
     protected function linkLocationToUser($locations,User $user){
 
-        $locations = Location::where('id',$locations)->get();
-        dd($locations);
+        $locations = Location::whereIn('id',$locations)->get();
+
+        foreach($locations as $location){
+            $location->managed_by = $user->id;
+            $location->update();
+        }
     }
 
     protected function updateInvite(Invite $invite){
         $invite->used = 1;
-
-        return $invite->update();
+        $invite->update();
+        return $invite;
     }
 }

@@ -15,12 +15,18 @@ Vue.component('bicycle-index',require('../components/bicycles/bicycleIndex.vue')
 Vue.component('pagination', require('laravel-vue-pagination'));
 Vue.component('repair-index',require('../components/repair/repairIndex').default);
 Vue.component('bicycle-timeline',require('../components/bicycles/timeline/bicycleTimeline').default);
-Vue.component('company-index',require('../components/company/CompanyIndex').default);
+Vue.component('location-owner-index',require('../components/location/owner/LocationIndex').default);
 Vue.component('profile-edit',require('../components/profile/profileEdit').default);
 Vue.component('sign-up',require('../components/auth/signup').default);
+Vue.component('location-manager-index',require('../components/location/manager/LocationIndex').default);
 Vue.component('multiselect',Multiselect);
 
+
+import VueFlatPickr from 'vue-flatpickr-component';
+Vue.use(VueFlatPickr);
+
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue';
+
 Vue.use(BootstrapVue);
 
 Vue.filter('truncate', function (text, length, suffix) {

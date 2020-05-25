@@ -35,40 +35,29 @@ class CompanyController extends Controller
             'contact.name_addition' => 'sometimes|max:5'
         ],$messages);
 
-
+        $isWorkplace = 0;
+        if($request['is_workplace'] == true){
+            $isWorkplace = 1;
+        }
         $locationData = [];
 
-        //TODO:: change street in vue to adress
+        dd($isWorkplace);
         foreach($request['locations'] as $index => $location){
             $location = Location::create([
                 'name' => $location['name'],
-                'address' => $location['street'],
+                'address' => $location['address'],
                 'number' => $location['number'],
-                'postalcode' => $location['postalcode']
+                'postalcode' => $location['postalcode'],
+                'is_workplace' => $isWorkplace
             ]);
             array_push($locationData,$location->id);
         }
 
+        $locations = Location::whereIn('id',$locationData)->get();
 
         $invite = new InviteController();
         $invite->createInvite(json_encode($locationData));
 
-
-
-    }
-
-    //TODO:: Change the standard password to the random generator.
-    protected function createUser($data){
-
-//        $pw = Str::random(10);
-        $pw = '123456789';
-        return User::create([
-            'name' => $data['name'],
-            'lastname_addition' => $data['name_addition'],
-            'lastname' => $data['lastname'],
-            'email' => $data['email'],
-            'password' => Hash::make($pw),
-            'phone' => $data['phone']
-        ]);
+        return response()->json($locations);
     }
 }

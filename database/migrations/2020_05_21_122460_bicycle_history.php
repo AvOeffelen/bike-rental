@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBicycleTable extends Migration
+class BicycleHistory extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,16 @@ class CreateBicycleTable extends Migration
      */
     public function up()
     {
-        Schema::create('bicycle', function (Blueprint $table) {
+        Schema::create('bicycle_history', function (Blueprint $table) {
             $table->id();
-            $table->string('framenumber');
-            $table->tinyInteger('available');
-            $table->tinyInteger('in_repair');
+            $table->unsignedBigInteger('bicycle_id');
+            $table->foreign('bicycle_id')
+                ->references('id')->on('bicycle');
+            $table->string('title', 255);
+            $table->text('description');
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *
@@ -29,6 +30,6 @@ class CreateBicycleTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bicycle');
+        Schema::dropIfExists('bicycle_history');
     }
 }
