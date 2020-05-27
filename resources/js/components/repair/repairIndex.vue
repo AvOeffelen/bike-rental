@@ -2,14 +2,9 @@
     <div>
         <b-row>
             <b-col>
-                <request-repair></request-repair>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col>
                 <div class="block">
                     <div class="block-header block-header-default">
-                        <h3 class="block-title">Bicycles.... in behandeling..??</h3>
+                        <h3 class="block-title">Aanvragen voor reparatie</h3>
                         <div class="text-right">
                             <b-button variant="block-option" class="btn-block-option" data-toggle="block-option"
                                       data-action="content_toggle"></b-button>
@@ -21,7 +16,6 @@
                             <tr>
                                 <th style="width: 33%;">Frame number</th>
                                 <th class="d-none d-sm-table-cell">description</th>
-                                <th class="d-none d-sm-table-cell">in repair</th>
                                 <th style="width: 200px;" class="text-center">Actions</th>
                             </tr>
                             </thead>
@@ -37,13 +31,11 @@
                                         <span>{{bicycle.description| truncate(35,'...')}}</span>
                                     </div>
                                 </td>
-                                <td class="d-none d-sm-table-cell">
-                                    <div>
-                                        <span v-if="bicycle.is_finished == 0">Not finished</span>
-                                    </div>
-                                </td>
                                 <td class="text-right">
-                                    <b-button size="sm">tf.</b-button>
+                                    <b-button variant="light" size="sm" class="btn-light"
+                                              @click="acceptRepair(bicycle,key)">
+                                        <i class="fa fa-fw fa-check text-primary"></i>
+                                    </b-button>
                                 </td>
                             </tr>
                             </tbody>
@@ -70,6 +62,15 @@
             this.getBicyclesCurrentlyInRepair();
         },
         methods: {
+            acceptRepair(bicycle){
+              axios.post('axios/repair/accept',bicycle).then( response =>{
+                for(let b in this.bicycles){
+                    if(this.bicycles[b].id == response.data.id){
+                        this.bicycles.splice(b,1);
+                    }
+                }
+              });
+            },
             // getBicycles() {
             //     axios.get('axios/bicycle/list/get').then(response => {
             //         this.bicycles = response.data;

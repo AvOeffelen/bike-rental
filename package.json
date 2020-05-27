@@ -30,6 +30,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "@popperjs/core": "^2.4.0",
         "bootstrap-vue": "^2.14.0",
         "laravel-vue-pagination": "^2.3.1",
         "vue-flatpickr-component": "^8.1.5",

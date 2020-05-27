@@ -21,7 +21,7 @@
     <link rel="stylesheet" id="css-main" href="{{ mix('css/dashmix.css') }}">
 
     <!-- You can include a specific file from public/css/themes/ folder to alter the default color theme of the template. eg: -->
- <link rel="stylesheet" id="css-theme" href="{{ mix('css/themes/xbr.css') }}">
+    <link rel="stylesheet" id="css-theme" href="{{ mix('css/themes/xbr.css') }}">
 @yield('css_after')
 
 <!-- Scripts -->
@@ -56,13 +56,19 @@
                     <button type="button" class="btn btn-dual" id="page-header-user-dropdown" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-fw fa-user d-sm-none"></i>
-                        <span class="d-none d-sm-inline-block">Admin</span>
+                        <span class="d-none d-sm-inline-block">{{auth()->user()->name}}</span>
                         <i class="fa fa-fw fa-angle-down ml-1 d-none d-sm-inline-block"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right p-0" aria-labelledby="page-header-user-dropdown">
-                        <a class="dropdown-item" href="javascript:void(0)">
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                           onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
                             <i class="far fa-fw fa-arrow-alt-circle-left mr-1"></i> Sign Out
                         </a>
+
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
                     </div>
                 </div>
             </div>

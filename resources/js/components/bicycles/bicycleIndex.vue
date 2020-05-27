@@ -117,9 +117,9 @@
                                       @click="initTransferBicycleModal(bicycle,key)">
                                 <i class="fa fa-fw fa-exchange-alt text-primary"></i>
                             </b-button>
-                            <b-button variant="light" size="sm" class="btn-light disabled" v-else
-                                      @click="initTransferBicycleModal(bicycle,key)" disabled>
-                                <i class="fa fa-fw fa-exchange-alt text-primary"></i>
+                            <b-button variant="light" size="sm" class="btn-light" v-else
+                                      @click="initCancelLease(bicycle,key)">
+                                <i class="fa fa-fw fa-arrow-left text-primary"></i>
                             </b-button>
                             <b-button variant="light" size="sm" class="btn-light" @click="updateBicycle(bicycle,key)"
                                       v-if="isEditing.currently == true && isEditing.key == key">
@@ -203,7 +203,14 @@
                 </b-col>
             </b-row>
             <template v-slot:modal-footer>
-                <b-button size="sm" variant="danger">cancel</b-button>
+                <b-button size="sm" variant="danger" @click="cancelTransferBicycle">cancel</b-button>
+                <b-button variant="alt-primary" size="sm" @click="transferBicycle"> save</b-button>
+            </template>
+        </b-modal>
+        <b-modal v-model="cancelLeaseModal" size="lg" title="Lease cancelen">
+            <p>Weet je zeker dat je deze lease wilt cancelen?</p>
+            <template v-slot:modal-footer>
+                <b-button size="sm" variant="danger" @click="closeCancelLeaseModal">cancel</b-button>
                 <b-button variant="alt-primary" size="sm" @click="transferBicycle"> save</b-button>
             </template>
         </b-modal>
@@ -213,12 +220,19 @@
 <script>
     function initialState() {
         return {
-            new_bicycle: {
                 framenumber: '',
                 available: 1,
                 in_repair: 0
-            },
-        }
+            };
+    }
+
+    function initialBikeTransferState() {
+        return {
+            bicycle: null,
+            location: null,
+            start: null,
+            end: null
+        };
     }
 
     import flatPickr from 'vue-flatpickr-component';
@@ -265,6 +279,7 @@
                     end: null
                 },
                 locations: [],
+                cancelLeaseModal:false,
             };
         },
         created() {
@@ -278,6 +293,16 @@
         mounted() {
         },
         methods: {
+            closeCancelLeaseModal(){
+                this.cancelLeaseModal = false;
+            },
+            cancelTransferBicycle(){
+                this.addToLocationModal = false;
+                Object.assign(this.bicycleTransferInformation, initialBikeTransferState());
+            },
+            initCancelLease(){
+                this.cancelLeaseModal = true;
+            },
             getLocations() {
                 axios.get('axios/location/get').then(response => {
                     this.locations = response.data

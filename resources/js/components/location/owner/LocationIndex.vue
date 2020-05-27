@@ -19,6 +19,7 @@
                     <thead class="bg-primary-dark text-light">
                     <tr>
                         <th style="width: 33%;">Naam</th>
+                        <th style="width: 33%;">Is werkplaats</th>
                         <th>Aantal fietsen</th>
                         <th style="width: 200px;" class="text-center">Acties</th>
                     </tr>
@@ -26,10 +27,18 @@
                     <tbody>
                     <tr v-for="(location,index) in this.locations" :key="index">
                         <td>{{location.name}}</td>
-                        <td>TBD</td>
+                        <td>
+                            <span v-if="location.is_workplace == 1">
+                                Ja
+                            </span>
+                            <span v-else>
+                                Nee
+                            </span>
+                        </td>
+                        <td>{{location.bicycle_count}}</td>
                         <td>
                             <div class="text-right">
-                                <b-button variant="light" size="sm" class="btn-light">
+                                <b-button variant="light" size="sm" class="btn-light" @click="loadLocation(location)">
                                     <i class="fa fa-fw fa-search text-primary"></i>
                                 </b-button>
                             </div>
@@ -54,10 +63,7 @@
             };
         },
         created() {
-            setTimeout( ()=>{
-                this.loading = false;
                 this.getLocations();
-            },5000)
         },
         mounted(){
             this.$root.$on('updateLocations',(locations)=>{
@@ -75,6 +81,10 @@
                     this.locations = response.data
                     this.loading = false;
                 })
+            },
+            loadLocation(location){
+                let url = '/location/'+location.id
+                window.location = url;
             }
         }
     }

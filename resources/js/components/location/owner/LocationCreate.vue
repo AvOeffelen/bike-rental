@@ -42,11 +42,12 @@
                         <b-col md="12" class="content-heading ">
                             <h4 class="pt-0">Contact persoon</h4>
                             <small class="text-muted mb-2">
-                                De contact persoon zal een email ontvangen met een automatisch gegenereerd wachtwoord
-                                waarmee hij/zij in kan loggen
+                                De contact persoon zal een email ontvangen met een uitnodiging om te registreren bij
+                                BEZORGFIETS. Zodra hij/zij deze geaccepteerd heeft zullen deze locaties aan hij/zij
+                                gekoppeld worden.
                             </small>
                         </b-col>
-                        <b-col md="5">
+                        <b-col md="6">
                             <label>Voornaam</label>
                             <b-input v-model="company.contact.name"
                                      class="form-control"
@@ -54,15 +55,7 @@
                                      placeholder="">
                             </b-input>
                         </b-col>
-                        <b-col md="2">
-                            <label>Tussenvoegsel</label>
-                            <b-input v-model="company.contact.name_addition"
-                                     class="form-control"
-                                     rows="4"
-                                     placeholder="">
-                            </b-input>
-                        </b-col>
-                        <b-col md="5">
+                        <b-col md="6">
                             <label>Achternaam</label>
                             <b-input v-model="company.contact.lastname"
                                      class="form-control"
@@ -70,17 +63,9 @@
                                      placeholder="">
                             </b-input>
                         </b-col>
-                        <b-col md="6">
+                        <b-col>
                             <label>Email</label>
                             <b-input v-model="company.contact.email"
-                                     class="form-control"
-                                     rows="4"
-                                     placeholder="">
-                            </b-input>
-                        </b-col>
-                        <b-col md="6">
-                            <label>Telefoonnummer</label>
-                            <b-input v-model="company.contact.phone"
                                      class="form-control"
                                      rows="4"
                                      placeholder="">
@@ -102,8 +87,8 @@
                                             <b-col>
                                                 <div class="text-right">
                                                     <b-button variant="alt-primary" size="sm"
-                                                              @click="addExtraLocation()">add
-                                                        location
+                                                              @click="addExtraLocation()">
+                                                        Add location
                                                     </b-button>
                                                 </div>
                                             </b-col>
@@ -168,12 +153,15 @@
                                      placeholder="">
                             </b-input>
                         </b-col>
-<!--                        TODO::Add this to the locations overview so the owners can easily make a workplace-->
+                        <!--                        TODO::Add this to the locations overview so the owners can easily make a workplace-->
                         <b-col md="12">
                             <span>
                                 <div class="form-check">
                                     <span>
-                                        <b-form-checkbox class="form-check-input" type="checkbox" v-model="company.is_workplace" id="example-checkbox-default1" label="Dit is een werkplaats" name="example-checkbox-default1">Dit is een werkplaats</b-form-checkbox>
+                                        <b-form-checkbox class="form-check-input" type="checkbox"
+                                                         v-model="company.is_workplace" id="example-checkbox-default1"
+                                                         label="Dit is een werkplaats" name="example-checkbox-default1"
+                                                         @change="countLocations()">Dit is een werkplaats</b-form-checkbox>
                                     </span>
                                 </div>
                             </span>
@@ -200,13 +188,11 @@
 <script>
     function formInitialState() {
         return {
-            is_workplace:false,
+            is_workplace: false,
             contact: {
                 name: "",
-                name_addition: '',
                 lastname: "",
                 email: "",
-                phone: '',
             },
             locations: [
                 {
@@ -225,13 +211,11 @@
             return {
                 loading: true,
                 company: {
-                    is_workplace:false,
+                    is_workplace: false,
                     contact: {
                         name: "",
-                        name_addition: '',
                         lastname: "",
                         email: "",
-                        phone: '',
                     },
                     locations: [
                         {
@@ -242,7 +226,8 @@
                         }
                     ]
                 },
-                errors: null
+                errors: null,
+                tooMuchLocations: false
             }
         },
         created() {

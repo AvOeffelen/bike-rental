@@ -27,7 +27,7 @@
                                 {{location.bicycle_count}}
                             </td>
                             <td class="text-right">
-                                <b-button variant="light" size="sm" class="btn-light">
+                                <b-button variant="light" size="sm" class="btn-light" @click="loadLocation(location)">
                                     <i class="fa fa-fw fa-search text-primary"></i>
                                 </b-button>
                             </td>
@@ -52,6 +52,10 @@
             this.getLocations();
         },
         methods:{
+            loadLocation(location){
+                let url = '/location/'+location.id
+                window.location = url;
+            },
             getLocations(){
                 axios.get('axios/location/get').then(response => {
                     this.locations = response.data

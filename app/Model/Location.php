@@ -9,7 +9,7 @@ class Location extends Model
 {
     protected $table = 'location';
 
-    protected $fillable = ['name','address','managed_by','number','postalcode'];
+    protected $fillable = ['name','address','managed_by','number','postalcode','is_workplace'];
 
 
     public function User()

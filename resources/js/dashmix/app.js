@@ -2,10 +2,12 @@
 // Import global dependencies
 import './bootstrap';
 require('../polyfills');
-
+window.Popper = require('popper.js').default;
 
 window.Vue = require('vue');
 import Multiselect from 'vue-multiselect'
+
+import { createPopper } from '@popperjs/core';
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
@@ -20,6 +22,10 @@ Vue.component('profile-edit',require('../components/profile/profileEdit').defaul
 Vue.component('sign-up',require('../components/auth/signup').default);
 Vue.component('location-manager-index',require('../components/location/manager/LocationIndex').default);
 Vue.component('multiselect',Multiselect);
+Vue.component('location-overview',require('../components/location/LocationOverview').default);
+Vue.component('location-manager-overview',require('../components/location/manager/locationOverview').default);
+Vue.component('location-mechanic-overview',require('../components/location/mechanic/LocationOverview').default);
+Vue.component('location-mechanic-index',require('../components/location/mechanic/LocationIndex').default);
 
 
 import VueFlatPickr from 'vue-flatpickr-component';
@@ -28,6 +34,7 @@ Vue.use(VueFlatPickr);
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue';
 
 Vue.use(BootstrapVue);
+Vue.use(createPopper);
 
 Vue.filter('truncate', function (text, length, suffix) {
     if (text.length > length) {

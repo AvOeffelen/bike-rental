@@ -20,7 +20,9 @@ class CreateBicycleRepairTable extends Migration
                 ->references('id')->on('bicycle');
             $table->text('description');
             $table->tinyInteger('granted')->default(0);
+            $table->tinyInteger('in_progress')->default(0);
             $table->tinyInteger('is_finished')->default(0);
+            $table->timestamp('started_at')->nullable();
             $table->timestamp('finished_at')->nullable();
             $table->timestamps();
         });

@@ -74,13 +74,15 @@ class BicycleController extends Controller
     }
 
     //TODO:: Add the where later
+    /*
+     * Idk what this function does..
+     */
     public function getBicyclesForCustomerForRepair()
     {
         $bicycles = Bicycle::all();
         return $bicycles;
     }
 
-    //TODO::check logic..
     public function transferBicycle(Request $request)
     {
         $bicyclex = Bicycle::where('id', $request['bicycle']['id'])->get();
@@ -88,11 +90,7 @@ class BicycleController extends Controller
         $bicycle->location_id = $request['location']['id'];
         $bicycle->lease_start = Carbon::parse($request['start'])->timestamp;
         $bicycle->lease_end = Carbon::parse($request['end'])->timestamp;
-
-
-        if (Carbon::parse($request['start'])->isToday()) {
-            $bicycle->available = 0;
-        }
+        $bicycle->available = 0;
         $bicycle->update();
 
 
@@ -103,7 +101,7 @@ class BicycleController extends Controller
             $bicycle->Location->name .
             '. periode start op ' .
             $bicycle->lease_start->format('d-m-Y') .
-            ' en eindigd op' . $bicycle->lease_end->format('d-m-Y') . '';
+            ' en eindigd op ' . $bicycle->lease_end->format('d-m-Y') . '.';
 
         $bikeHelper = new BicycleHistoryHelper();
         $bikeHelper->storeBicycleEvent($helperArray);

@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 
 class CompanyController extends Controller
 {
+    //TODO::Send email when this is created
     public function post(Request $request)
     {
         $messages = [
@@ -24,24 +25,24 @@ class CompanyController extends Controller
             'contact.lastname.required' => 'Achternaam is verplicht',
             'contact.name.required' => 'Voornaam is verplicht',
             'contact.email.required' => 'E-mail is verplicht',
-            'contact.name_addition.max'=> 'Tussenvoegsel mag niet langer zijn dan 5 karakters'
         ];
+
         $validatedData = $request->validate([
             'contact.email' => 'bail|unique:users',
             'locations.*.*' => 'required',
             'locations.*.street' => 'max:25',
             'locations.*.number' => 'min:1',
             'contact.*' => 'required',
-            'contact.name_addition' => 'sometimes|max:5'
         ],$messages);
 
-        $isWorkplace = 0;
-        if($request['is_workplace'] == true){
-            $isWorkplace = 1;
-        }
-        $locationData = [];
 
-        dd($isWorkplace);
+        if($request['is_workplace'] === true){
+            $isWorkplace = 1;
+        } else {
+            $isWorkplace = 0;
+        }
+
+        $locationData = [];
         foreach($request['locations'] as $index => $location){
             $location = Location::create([
                 'name' => $location['name'],
