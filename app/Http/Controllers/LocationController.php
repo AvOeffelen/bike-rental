@@ -15,7 +15,7 @@ class LocationController extends Controller
 
     public function showLocation(Location $location)
     {
-        $locationx = Location::with('bicycle')->where('id', $location->id)->get();
+        $locationx = Location::with('bicycle.BicycleRepair','bicycle')->where('id', $location->id)->get();
 
         return view('location.overview.index',[
             'location' =>$locationx->first()

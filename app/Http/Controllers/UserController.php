@@ -23,4 +23,9 @@ class UserController extends Controller
             'user' => Auth::user()
         ]);
     }
+
+    public function index()
+    {
+        return response()->view('users.index');
+    }
 }

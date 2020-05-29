@@ -15,33 +15,31 @@ class SignUpController extends Controller
 
     public function signUp($inviteCode)
     {
-        $invite = Invite::where('code',$inviteCode)->get();
-        return view('auth.register',[
+        $invite = Invite::where('code', $inviteCode)->get();
+        return view('auth.register', [
             'invite' => $invite->first()
         ]);
     }
 
-    public function finishSignUp(Request $request,Invite $invite)
+    public function finishSignUp(Request $request, Invite $invite)
     {
 
-        if($invite->used === 1){
+        if ($invite->used === 1) {
             return redirect()->back();
         }
+
         $isLocationWorkplace = $this->checkLocationIsLocation(json_decode($invite->data));
         $this->validator($request);
-        if($isLocationWorkplace == true){
-            $user = $this->createUser($request->all(),'mechanic');
-        } else {
-            $user = $this->createUser($request->all(),'location_manager');
-        }
 
+        $user = $this->createUser($request->all(), $invite->type);
 
-        $this->linkLocationToUser(json_decode($invite->data),$user);
+        $this->linkLocationToUser(json_decode($invite->data), $user);
 
         Auth::loginUsingId($user->id);
         $this->updateInvite($invite);
         return response()->redirectToRoute('home');
     }
+
     public function validator(Request $request)
     {
         $message = [
@@ -54,9 +52,11 @@ class SignUpController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'phone' => 'required|digits_between:9,15',
-        ],$message);
+        ], $message);
     }
-    protected function createUser($data,$type){
+
+    protected function createUser($data, $type)
+    {
         return User::create([
             'name' => $data['name'],
             'lastname_addition' => $data['addition'],
@@ -68,27 +68,38 @@ class SignUpController extends Controller
         ]);
     }
 
-    protected function checkLocationIsLocation($locations){
-        $locations = Location::whereIn('id',$locations)->get();
+    protected function checkLocationIsLocation($locations)
+    {
+        if ($locations != null) {
 
-        foreach ($locations as $location){
-            if($location->is_workplace === 1){
-                return true;
+            $locations = Location::whereIn('id', $locations)->get();
+
+            foreach ($locations as $location) {
+                if ($location->is_workplace === 1) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return false;
+        }
+    }
+
+    protected function linkLocationToUser($locations, User $user)
+    {
+        if($locations != null){
+
+            $locations = Location::whereIn('id', $locations)->get();
+
+            foreach ($locations as $location) {
+                $location->managed_by = $user->id;
+                $location->update();
             }
         }
-        return false;
-    }
-    protected function linkLocationToUser($locations,User $user){
-
-        $locations = Location::whereIn('id',$locations)->get();
-
-        foreach($locations as $location){
-            $location->managed_by = $user->id;
-            $location->update();
-        }
     }
 
-    protected function updateInvite(Invite $invite){
+    protected function updateInvite(Invite $invite)
+    {
         $invite->used = 1;
         $invite->update();
         return $invite;

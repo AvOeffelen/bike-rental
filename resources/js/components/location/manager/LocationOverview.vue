@@ -18,7 +18,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="(bicycle,index) in location.bicycle">
+                    <tr v-for="(bicycle,index) in location.bicycle" :key="index">
                         <td>{{bicycle.framenumber}}</td>
                         <td>
                                 <span v-if="bicycle.lease_start && bicycle.lease_end !== null">
@@ -30,8 +30,12 @@
                         </td>
                         <td>
                             <div class="text-right">
-                                <b-button variant="light" size="sm" class="btn-light"
+                                <b-button variant="light" size="sm" class="btn-light" v-if="bicycle.requested_repair != 1"
                                           @click="initRequestRepairModal(bicycle)">
+                                    <i class="fa fa-fw fa-wrench text-primary"></i>
+                                </b-button>
+                                <b-button :id="`popover-description-${index}`" variant="light" size="sm" class="btn-light disabled" v-else
+                                          @click="initRequestRepairModal(bicycle)" disabled>
                                     <i class="fa fa-fw fa-wrench text-primary"></i>
                                 </b-button>
                             </div>
@@ -42,6 +46,22 @@
             </div>
         </div>
         <b-modal v-model="requestRepair">
+            <b-row v-if="errors != null">
+                <b-col>
+                    <div class="block block-bordered">
+                        <div class="block-header block-header-default">
+                            <h4 class="block-title">Er zijn fouten geconstateerd in het formulier.</h4>
+                        </div>
+                        <div class="block-content">
+                            <ul>
+                                <li class="text-danger" v-for="(error,index) in this.errors" :key="index">
+                                    {{error[0]}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </b-col>
+            </b-row>
             <b-row>
                 <b-col class="">
                     <h3 class="block-title">Geselecteerde fiets:</h3>
@@ -105,7 +125,8 @@
                 bike_to_repair: {
                     description: '',
                     bicycle: {}
-                }
+                },
+                errors: null,
             };
         },
         created() {
@@ -119,11 +140,23 @@
                 this.requestRepair = true;
                 this.bike_to_repair.bicycle = bicycle;
             },
+            getBicycles(){
+              axios.get('/axios/location/'+this.location.id+'/get-bicycles').then( response => {
+                  this.location.bicycle = response.data;
+              });
+            },
             submitRepair() {
                 axios.post('/axios/repair/request', this.bike_to_repair)
                     .then(response => {
                         Object.assign(this.bike_to_repair, bikeInitialState());
                         this.requestRepair = false;
+                        this.getBicycles();
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        if (error.response.status == 422) {
+                            this.errors = error.response.data.errors;
+                        }
                     });
             },
         }

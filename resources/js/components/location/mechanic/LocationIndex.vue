@@ -3,7 +3,7 @@
 
         <div class="block">
             <div class="block-header block-header-default">
-                <h3 class="block-title">xx</h3>
+                <h3 class="block-title">Fietsenmaker</h3>
                 <div class="text-right">
                     <b-button variant="block-option" class="btn-block-option" data-toggle="block-option"
                               data-action="content_toggle"></b-button>
@@ -24,9 +24,9 @@
                         <tr v-for="(bicycle,index) in this.bicycles" :key="index">
                             <td>{{bicycle.bicycle.framenumber}}</td>
                             <td>
-                                <span id="bicycle-description">{{bicycle.description | truncate('35','...')}}</span>
-                                <b-popover target="bicycle-description" triggers="hover" placement="top">
-                                    <template v-slot:title>Test</template>
+                                <span :id="`popover-description-${index}`">{{bicycle.description | truncate('35','...')}}</span>
+                                <b-popover :target="`popover-description-${index}`" triggers="hover" placement="top">
+                                    <template v-slot:title>Omschrijving</template>
                                     {{bicycle.description}}
                                 </b-popover>
                             </td>

@@ -26,7 +26,19 @@ Vue.component('location-overview',require('../components/location/LocationOvervi
 Vue.component('location-manager-overview',require('../components/location/manager/locationOverview').default);
 Vue.component('location-mechanic-overview',require('../components/location/mechanic/LocationOverview').default);
 Vue.component('location-mechanic-index',require('../components/location/mechanic/LocationIndex').default);
+Vue.component('user-index',require('../components/users/UserIndex').default);
+Vue.component('owner-dashboard',require('../components/dashboard/OwnerDashboard').default);
 
+import Toast from "vue-toastification";
+// Import the CSS or use your own!
+import "vue-toastification/dist/index.css";
+const options = {
+    timeout: 2000,
+    position: 'top-right'
+};
+
+
+Vue.use(Toast, options);
 
 import VueFlatPickr from 'vue-flatpickr-component';
 Vue.use(VueFlatPickr);

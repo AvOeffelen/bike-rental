@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Axios\Owner;
 use App\Helpers\BicycleHistoryHelper;
 use App\Http\Controllers\Controller;
 use App\Model\Bicycle;
+use App\Model\Location;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -83,22 +84,60 @@ class BicycleController extends Controller
         return $bicycles;
     }
 
+    public function transferBicycleBack(Request $request)
+    {
+        $bicycle = Bicycle::where('id', $request['id'])->first();
+        $bicycle->location_id = null;
+        $bicycle->lease_start = null;
+        $bicycle->lease_end = null;
+        $bicycle->available = 1;
+        $bicycle->update();
+
+        $helperArray = [];
+        $helperArray['id'] = $bicycle->id;
+        $helperArray['title'] = 'Fiets terug ontvangen';
+        $helperArray['description'] = 'Fiets terug in ontvangst genomen. Hij is nu weer beschikbaar voor verhuur';
+
+        $bikeHelper = new BicycleHistoryHelper();
+        $bikeHelper->storeBicycleEvent($helperArray);
+
+        return $bicycle;
+    }
+
+
     public function transferBicycle(Request $request)
     {
-        $bicyclex = Bicycle::where('id', $request['bicycle']['id'])->get();
-        $bicycle = $bicyclex->first();
+
+        $messages = [
+            'location.required' => 'Een locatie is verplicht',
+            'end.after_or_equal' => 'Eind datum van lease moet gelijk zijn of groter dan de start datum',
+            'start.before_or_equal' => 'Start datum van lease moet gelijk zijn of eerder dan de eind datum',
+            'start.required' => 'Start datum is verplicht.',
+            'end.required' => 'Eind datum is verplicht.',
+        ];
+
+        $validatedData = $request->validate([
+            'location' => 'required',
+            'start' => 'required|sometimes|before_or_equal:end',
+            'end' => 'required|sometimes|after_or_equal:start',
+        ],$messages);
+
+
+        $bicycle = Bicycle::where('id', $request['bicycle']['id'])->first();
         $bicycle->location_id = $request['location']['id'];
         $bicycle->lease_start = Carbon::parse($request['start'])->timestamp;
         $bicycle->lease_end = Carbon::parse($request['end'])->timestamp;
         $bicycle->available = 0;
         $bicycle->update();
 
+        $location = Location::where('id',$request['location']['id'])->first();
+
 
         $helperArray = [];
         $helperArray['id'] = $bicycle->id;
         $helperArray['title'] = 'Fiets verhuurd';
         $helperArray['description'] = 'Fiets word verhuurd aan locatie ' .
-            $bicycle->Location->name .
+            $location->name .
             '. periode start op ' .
             $bicycle->lease_start->format('d-m-Y') .
             ' en eindigd op ' . $bicycle->lease_end->format('d-m-Y') . '.';

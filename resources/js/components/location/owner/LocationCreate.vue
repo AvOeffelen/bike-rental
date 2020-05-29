@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div v-else>
-                    <b-row v-if="errors != null">
+                    <b-row v-if="errors.length != 0">
                         <b-col>
                             <div class="block block-bordered">
                                 <div class="block-header block-header-default">
@@ -38,7 +38,21 @@
                             </div>
                         </b-col>
                     </b-row>
-                    <b-row class="items-push">
+                    <b-col md="12">
+                            <span>
+                                <div class="form-check">
+                                    <span>
+                                        <b-form-checkbox class="form-check-input" type="checkbox"
+                                                         v-model="company.no_contact_person" id="no_contact_person"
+                                                         label="Dit is een werkplaats" name="no_contact_person"
+                                                         @change="showContactForm()">
+                                            Ik wil <b>iemand</b> uitnodigen
+                                        </b-form-checkbox>
+                                    </span>
+                                </div>
+                            </span>
+                    </b-col>
+                    <b-row class="items-push" v-if="company.no_contact_person == true">
                         <b-col md="12" class="content-heading ">
                             <h4 class="pt-0">Contact persoon</h4>
                             <small class="text-muted mb-2">
@@ -68,7 +82,8 @@
                             <b-input v-model="company.contact.email"
                                      class="form-control"
                                      rows="4"
-                                     placeholder="">
+                                     placeholder=""
+                                     type="email">
                             </b-input>
                         </b-col>
                     </b-row>
@@ -153,7 +168,6 @@
                                      placeholder="">
                             </b-input>
                         </b-col>
-                        <!--                        TODO::Add this to the locations overview so the owners can easily make a workplace-->
                         <b-col md="12">
                             <span>
                                 <div class="form-check">
@@ -161,7 +175,7 @@
                                         <b-form-checkbox class="form-check-input" type="checkbox"
                                                          v-model="company.is_workplace" id="example-checkbox-default1"
                                                          label="Dit is een werkplaats" name="example-checkbox-default1"
-                                                         @change="countLocations()">Dit is een werkplaats</b-form-checkbox>
+                                        >Dit is een werkplaats</b-form-checkbox>
                                     </span>
                                 </div>
                             </span>
@@ -189,6 +203,7 @@
     function formInitialState() {
         return {
             is_workplace: false,
+            no_contact_person: true,
             contact: {
                 name: "",
                 lastname: "",
@@ -212,6 +227,7 @@
                 loading: true,
                 company: {
                     is_workplace: false,
+                    no_contact_person: true,
                     contact: {
                         name: "",
                         lastname: "",
@@ -226,8 +242,9 @@
                         }
                     ]
                 },
-                errors: null,
-                tooMuchLocations: false
+                errors: [],
+                tooMuchLocations: false,
+                noContact: true,
             }
         },
         created() {
@@ -236,6 +253,14 @@
             }, 1000)
         },
         methods: {
+            showContactForm() {
+                this.company.no_contact_person = !this.company.no_contact_person;
+                if (this.company.no_contact_person != true) {
+                    this.noContact = true;
+                } else {
+                    this.noContact = false;
+                }
+            },
             resetForm() {
                 Object.assign(this.company, formInitialState());
             },
@@ -244,6 +269,7 @@
                     .then(response => {
                         this.$root.$emit('updateLocations', response.data);
                         Object.assign(this.company, formInitialState());
+                        this.errors = [];
                     })
                     .catch(error => {
                         console.log(error);

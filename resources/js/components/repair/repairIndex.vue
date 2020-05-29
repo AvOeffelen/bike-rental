@@ -64,11 +64,7 @@
         methods: {
             acceptRepair(bicycle){
               axios.post('axios/repair/accept',bicycle).then( response =>{
-                for(let b in this.bicycles){
-                    if(this.bicycles[b].id == response.data.id){
-                        this.bicycles.splice(b,1);
-                    }
-                }
+                    this.getBicyclesCurrentlyInRepair();
               });
             },
             // getBicycles() {

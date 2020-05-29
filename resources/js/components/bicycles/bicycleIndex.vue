@@ -88,7 +88,7 @@
                             </div>
                             <div v-else>
                                 <div v-if="isEditing.currently == true && isEditing.key == key">
-<!--                                    TODO:: add logic here so that if theres no date to be found we can't even edit that shit.-->
+                                    <!--                                    TODO:: add logic here so that if theres no date to be found we can't even edit that shit.-->
                                     <div v-if="bicycle.lease_start && bicycle.lease_end != null">
                                         <span class="date-pickrr">
                                         {{bicycle.lease_start}}
@@ -118,7 +118,7 @@
                                 <i class="fa fa-fw fa-exchange-alt text-primary"></i>
                             </b-button>
                             <b-button variant="light" size="sm" class="btn-light" v-else
-                                      @click="initCancelLease(bicycle,key)">
+                                      @click="initTransferBicycleBackModal(bicycle,key)">
                                 <i class="fa fa-fw fa-arrow-left text-primary"></i>
                             </b-button>
                             <b-button variant="light" size="sm" class="btn-light" @click="updateBicycle(bicycle,key)"
@@ -165,6 +165,28 @@
                         {{this.bicycleTransferInformation.bicycle.framenumber}}</p>
                 </b-col>
             </b-row>
+            <b-row v-if="errors != null">
+                <b-col>
+                    <div class="block block-bordered">
+                        <div class="block-header block-header-default">
+                            <h4 class="block-title">Er zijn fouten geconstateerd in het formulier.</h4>
+                            <div class="text-right">
+                                <b-button variant="block-option" data-toggle="block-option"
+                                          data-action="content_toggle">
+                                    <i class="si si-arrow-up"></i>
+                                </b-button>
+                            </div>
+                        </div>
+                        <div class="block-content">
+                            <ul>
+                                <li class="text-danger" v-for="(error,index) in this.errors" :key="index">
+                                    {{error[0]}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </b-col>
+            </b-row>
             <b-row>
                 <b-col class="">
                     <h3 class="block-title">Nieuwe locatie:</h3>
@@ -208,22 +230,26 @@
             </template>
         </b-modal>
         <b-modal v-model="cancelLeaseModal" size="lg" title="Lease cancelen">
-            <p>Weet je zeker dat je deze lease wilt cancelen?</p>
+            <p>Wil je deze fiets terug halen naar BEZORGFIETS? Je maakt de fiets dan weer toegankelijk om te verhuren
+                aan andere locaties.</p>
             <template v-slot:modal-footer>
-                <b-button size="sm" variant="danger" @click="closeCancelLeaseModal">cancel</b-button>
-                <b-button variant="alt-primary" size="sm" @click="transferBicycle"> save</b-button>
+                <b-button size="sm" variant="danger" @click="closeCancelLeaseModal">Cancel</b-button>
+                <b-button variant="alt-primary" size="sm" @click="transferBicycleBack()">Transfer</b-button>
             </template>
         </b-modal>
     </div>
 </template>
 
 <script>
+    function initErrorState() {
+        return [];
+    }
     function initialState() {
         return {
-                framenumber: '',
-                available: 1,
-                in_repair: 0
-            };
+            framenumber: '',
+            available: 1,
+            in_repair: 0
+        };
     }
 
     function initialBikeTransferState() {
@@ -236,7 +262,6 @@
     }
 
     import flatPickr from 'vue-flatpickr-component';
-
 
     import {Dutch} from 'flatpickr/dist/l10n/nl.js';
     import 'flatpickr/dist/flatpickr.css';
@@ -256,8 +281,8 @@
                     framenumber: '',
                     available: 1,
                     in_repair: 0,
-                    lease_start:'',
-                    lease_end:''
+                    lease_start: '',
+                    lease_end: ''
                 },
                 options: [
                     {value: 1, text: "yes"},
@@ -279,7 +304,7 @@
                     end: null
                 },
                 locations: [],
-                cancelLeaseModal:false,
+                cancelLeaseModal: false,
             };
         },
         created() {
@@ -293,15 +318,19 @@
         mounted() {
         },
         methods: {
-            closeCancelLeaseModal(){
+            closeCancelLeaseModal() {
                 this.cancelLeaseModal = false;
-            },
-            cancelTransferBicycle(){
-                this.addToLocationModal = false;
                 Object.assign(this.bicycleTransferInformation, initialBikeTransferState());
             },
-            initCancelLease(){
+            cancelTransferBicycle() {
+                this.addToLocationModal = false;
+                Object.assign(this.bicycleTransferInformation, initialBikeTransferState());
+                Object.assign(this.errors,initErrorState());
+
+            },
+            initTransferBicycleBackModal(bicycle) {
                 this.cancelLeaseModal = true;
+                this.bicycleTransferInformation = bicycle;
             },
             getLocations() {
                 axios.get('axios/location/get').then(response => {
@@ -312,15 +341,34 @@
                 this.addToLocationModal = true;
                 this.bicycleTransferInformation.bicycle = bicycle;
             },
+            transferBicycleBack() {
+                axios.post('axios/bicycle/transfer-back', this.bicycleTransferInformation)
+                    .then(response => {
+                        for (let b in this.bicycles.data) {
+                            if (this.bicycles.data[b].id == response.data.id) {
+                                this.bicycles.data[b] = response.data;
+                            }
+                        }
+                        Object.assign(this.bicycleTransferInformation, initialBikeTransferState());
+                        this.cancelLeaseModal = false;
+                    });
+            },
             transferBicycle() {
                 axios.post('axios/bicycle/transfer', this.bicycleTransferInformation)
                     .then(response => {
                         this.addToLocationModal = false;
-
-                        for(let b in this.bicycles.data){
-                            if(this.bicycles.data[b].id == response.data.id){
+                        for (let b in this.bicycles.data) {
+                            if (this.bicycles.data[b].id == response.data.id) {
                                 this.bicycles.data[b] = response.data;
                             }
+                        }
+                        Object.assign(this.bicycleTransferInformation, initialBikeTransferState());
+                        Object.assign(this.errors,initErrorState());
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        if (error.response.status == 422) {
+                            this.errors = error.response.data.errors;
                         }
                     });
             },

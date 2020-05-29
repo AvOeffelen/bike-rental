@@ -13,32 +13,36 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('mailable', function () {
+    $invite = App\Model\Invite::find(9);
+
+    return new App\Mail\Invite($invite);
 });
 
-Route::get('/bicycles','BicycleController@index');
+Route::get('/','HomeController@index')->middleware(['web','auth']);
+
+Route::get('/dashboard','HomeController@index')->name('home')->middleware(['web','auth']);
+
+Route::get('/bicycles','BicycleController@index')->middleware(['web','owner']);
 
 Auth::routes(['verify' => true]);
 
-Route::get('/home', 'HomeController@index')->name('home')->middleware(['web']);
+//Route::get('/home', 'HomeController@index')->name('home')->middleware(['web']);
 
-Route::get('/repair','RepairController@index')->name('repair');
+Route::get('/repair','RepairController@index')->name('repair')->middleware(['web','mechanic']);
+//Useless.
 Route::get('/company','CompanyController@index')->name('company');
 
-Route::get('/bicycle/timeline','BicycleController@showTimeline')->name('bicycle.timeline');
-
-Route::get('/profile','UserController@showProfile')->name('profile');
-Route::get('profile/edit','UserController@editProfile')->name('profile.edit')->middleware(['web']);
-Route::get('/signup/continue','UserController@continueSignUp')->name('profile.continue.singup')->middleware(['web','auth']);
+Route::get('/bicycle/timeline','BicycleController@showTimeline')->name('bicycle.timeline')->middleware(['web','mechanic','owner']);
 
 Route::get('/signup/{inviteCode}','SignUpController@signup')->name('signup');
 
 Route::post('signup/{invite}/finish','SignUpController@finishSignUp')->name('axios.finish.signup');
 
+Route::get('/users','UserController@index')->name('users')->middleware(['web','owner']);;
 
 Route::get('/location','LocationController@showForLocationManager')->middleware(['web','auth'])->name('location');
-Route::get('/location/{location}','LocationController@showLocation')->middleware(['web','auth'])->name('location.show');
+Route::get('/location/{location}','LocationController@showLocation')->middleware(['web','auth','locationManager','owner'])->name('location.show');
 
 Route::group(['prefix' => 'axios/bicycle', 'namespace' => 'Axios\Owner'], function () {
     Route::post('/post','BicycleController@createBicycle')->name('axios.bicycle.create');
@@ -48,7 +52,14 @@ Route::group(['prefix' => 'axios/bicycle', 'namespace' => 'Axios\Owner'], functi
     Route::get('/paginate','BicycleController@paginateBicycles')->name('axios.bicycle.paginate');
 
     Route::post('/transfer','BicycleController@transferBicycle')->name('axios.bicycle.transfer');
+    Route::post('/transfer-back','BicycleController@transferBicycleBack')->name('axios.bicycle.transfer-back');
 });
+
+Route::group(['prefix' => 'axios/users', 'namespace' => 'Axios\Owner'], function () {
+    Route::get('/get','UserController@getUsers')->name('axios.users.get');
+    Route::post('/invite','UserController@sendInvite')->name('axios.users.send.invite');
+});
+
 Route::group(['prefix' => 'axios/bicycle', 'namespace' => 'Axios'], function () {
     Route::get('/list/get','BicycleController@getBicyclesForCustomerForRepair')->name('axios.bicycle.get.list');
 });
@@ -70,4 +81,5 @@ Route::group(['prefix' => 'axios/repair', 'namespace' => 'Axios'], function () {
 });
 Route::group(['prefix' => 'axios/location','namespace'=> 'Axios','middleware' => ['web']], function () {
     Route::get('get','LocationController@getLocations')->name('location.show');
+    Route::get('/{location}/get-bicycles','LocationController@getBicycles')->name('location.bicycles');
 });

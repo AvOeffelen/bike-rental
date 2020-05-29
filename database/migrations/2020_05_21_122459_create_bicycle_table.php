@@ -16,8 +16,9 @@ class CreateBicycleTable extends Migration
         Schema::create('bicycle', function (Blueprint $table) {
             $table->id();
             $table->string('framenumber');
-            $table->tinyInteger('available');
-            $table->tinyInteger('in_repair');
+            $table->tinyInteger('available')->default(0);
+            $table->tinyInteger('in_repair')->default(0);
+            $table->tinyInteger('requested_repair')->default(0);
             $table->unsignedBigInteger('location_id')->nullable();
             $table->foreign('location_id')
                 ->references('id')->on('location');

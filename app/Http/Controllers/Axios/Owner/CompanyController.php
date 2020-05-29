@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Axios\Owner;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\InviteController;
+use App\Mail\Invite;
 use App\Model\Location;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class CompanyController extends Controller
@@ -15,25 +17,46 @@ class CompanyController extends Controller
     //TODO::Send email when this is created
     public function post(Request $request)
     {
-        $messages = [
-            'locations.*.name.required' => 'De locatie naam is verplicht',
-            'locations.*.number.required' => 'Het huisnummer(TBD) is verplicht',
-            'locations.*.street.required' => 'De straatnaam is verplicht',
-            'locations.*.postalcode.required' => 'De postcode is verplicht',
-            'locations.*.*.min' => 'Het veld moet minimaal 3 karakters bevatten',
-            'contact.email.unique' => 'Dit email adres is al in gebruik.',
-            'contact.lastname.required' => 'Achternaam is verplicht',
-            'contact.name.required' => 'Voornaam is verplicht',
-            'contact.email.required' => 'E-mail is verplicht',
-        ];
+        if($request['no_contact_person'] == true){
+            $messages = [
+                'locations.*.name.required' => 'De locatie naam is verplicht',
+                'locations.*.number.required' => 'Het huisnummer(TBD) is verplicht',
+                'locations.*.address.required' => 'De straatnaam is verplicht',
+                'locations.*.postalcode.required' => 'De postcode is verplicht',
+                'locations.*.*.min' => 'Het veld moet minimaal 3 karakters bevatten',
+                'contact.email.unique' => 'Dit email adres is al in gebruik.',
+                'locations.*.unique' => 'Locatie naam moet uniek zijn',
+                'contact.lastname.required' => 'Achternaam is verplicht',
+                'contact.name.required' => 'Voornaam is verplicht',
+                'contact.email.required' => 'E-mail is verplicht',
+            ];
 
-        $validatedData = $request->validate([
-            'contact.email' => 'bail|unique:users',
-            'locations.*.*' => 'required',
-            'locations.*.street' => 'max:25',
-            'locations.*.number' => 'min:1',
-            'contact.*' => 'required',
-        ],$messages);
+            $validatedData = $request->validate([
+                'contact.email' => 'bail|unique:users',
+                'locations.*.*' => 'required',
+                'locations.*.name' => 'unique:location',
+                'locations.*.address' => 'max:25',
+                'locations.*.number' => 'min:1',
+                'contact.*' => 'required',
+            ],$messages);
+        } else {
+
+            $messages = [
+                'locations.*.name.required' => 'De locatie naam is verplicht',
+                'locations.*.number.required' => 'Het huisnummer(TBD) is verplicht',
+                'locations.*.address.required' => 'De straatnaam is verplicht',
+                'locations.*.postalcode.required' => 'De postcode is verplicht',
+                'locations.*.*.min' => 'Het veld moet minimaal 3 karakters bevatten',
+                'locations.*.unique' => 'Locatie naam moet uniek zijn',
+            ];
+
+            $validatedData = $request->validate([
+                'locations.*.*' => 'required',
+                'locations.*.name' => 'unique:location',
+                'locations.*.address' => 'max:25',
+                'locations.*.number' => 'min:1',
+            ], $messages);
+        }
 
 
         if($request['is_workplace'] === true){
@@ -56,8 +79,18 @@ class CompanyController extends Controller
 
         $locations = Location::whereIn('id',$locationData)->get();
 
-        $invite = new InviteController();
-        $invite->createInvite(json_encode($locationData));
+        if($isWorkplace === 1){
+            $type = 'mechanic';
+        } else {
+            $type = 'location_manager';
+        }
+
+        if($request['no_contact_person'] == true) {
+            $invite = new InviteController();
+            $invite = $invite->createInvite(json_encode($locationData), $type);
+
+            Mail::to($request['contact']['email'])->send(new Invite($invite));
+        }
 
         return response()->json($locations);
     }

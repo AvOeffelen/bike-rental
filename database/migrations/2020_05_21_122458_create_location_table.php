@@ -18,7 +18,7 @@ class CreateLocationTable extends Migration
             $table->unsignedBigInteger('managed_by')->nullable();
             $table->foreign('managed_by')
                 ->references('id')->on('users');
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('address');
             $table->string('number');
             $table->string('postalcode');

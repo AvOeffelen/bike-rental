@@ -66,7 +66,7 @@ class BicycleRepairController extends Controller
 
 
         $helperArray = [];
-        $helperArray['id'] = $bike->id;
+        $helperArray['id'] = $bicycle->id;
         $helperArray['title'] = 'Reparatie gestart.';
         $helperArray['description'] = "Omschrijving klant: \"". $request['description'] . "\". Reparatie gestart op: " . $bike->started_at->format('d-m-Y') . "." ;
 
@@ -86,22 +86,35 @@ class BicycleRepairController extends Controller
 
         $bicycle = $bike->bicycle;
         $bicycle->in_repair = 0;
+        $bicycle->requested_repair = 0;
+        $bicycle->available = 1;
+        $bicycle->location_id = null;
         $bicycle->update();
 
+
+
         $helperArray = [];
-        $helperArray['id'] = $bike->bicycle->id;
+        $helperArray['id'] = $bicycle->id;
         $helperArray['title'] = 'Reparatie voltooid!';
         $helperArray['description'] = "Omschrijving klant: \"". $request['description'] . "\". Reparatie gestart op: " . $bike->started_at->format('d-m-Y') . " en is afgerond op: ". $bike->started_at->format('d-m-Y') ."." ;
 
         $bikeHelper = new BicycleHistoryHelper();
         $bikeHelper->storeBicycleEvent($helperArray);
 
-
         return $bike;
     }
 
+    //TODO:: validation
     public function requestRepair(Request $request)
     {
+        $messages = [
+            'description.required' => 'Beschrijving is verplicht'
+        ];
+
+        $validatedData = $request->validate([
+            'description' => 'required|min:1',
+        ],$messages);
+
         $data =[];
         $data['bicycle_id'] = $request['bicycle']['id'];
         $data['description'] = $request['description'];
@@ -109,12 +122,15 @@ class BicycleRepairController extends Controller
         $bike = $this->storeRepair($data);
 
         $helperArray = [];
-        $helperArray['id'] = $bike->id;
+        $helperArray['id'] = $bike->bicycle->id;
         $helperArray['title'] = 'Repair has been requested.';
         $helperArray['description'] = $request['description'];
 
         $bikeHelper = new BicycleHistoryHelper();
         $bikeHelper->storeBicycleEvent($helperArray);
+
+        $bike->bicycle->requested_repair = 1;
+        $bike->bicycle->update();
 
         return $bike;
     }

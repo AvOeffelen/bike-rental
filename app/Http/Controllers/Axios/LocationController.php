@@ -25,4 +25,10 @@ class LocationController extends Controller
         }
 
     }
+
+    public function getBicycles(Location $location)
+    {
+
+        return response()->json($location->bicycle);
+    }
 }
