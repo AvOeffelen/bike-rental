@@ -28,6 +28,9 @@ Vue.component('location-mechanic-overview',require('../components/location/mecha
 Vue.component('location-mechanic-index',require('../components/location/mechanic/LocationIndex').default);
 Vue.component('user-index',require('../components/users/UserIndex').default);
 Vue.component('owner-dashboard',require('../components/dashboard/OwnerDashboard').default);
+Vue.component('location-manager-dashboard',require('../components/dashboard/LocationManagerDashboard').default);
+Vue.component('location-manager-bicycle-index',require('../components/bicycles/locationManager/bicycleIndex').default);
+Vue.component('mechanic-dashboard',require('../components/dashboard/MechanicDashboard').default);
 
 import Toast from "vue-toastification";
 // Import the CSS or use your own!

@@ -9,7 +9,6 @@ class LocationController extends Controller
 {
     public function showForLocationManager()
     {
-
         return view('location.manager.index');
     }
 
@@ -20,5 +19,11 @@ class LocationController extends Controller
         return view('location.overview.index',[
             'location' =>$locationx->first()
         ]);
+    }
+
+    public function showWorkplace()
+    {
+
+        return view('workplace.index');
     }
 }

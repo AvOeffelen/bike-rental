@@ -14,7 +14,6 @@ use Illuminate\Support\Str;
 
 class CompanyController extends Controller
 {
-    //TODO::Send email when this is created
     public function post(Request $request)
     {
         if($request['no_contact_person'] == true){

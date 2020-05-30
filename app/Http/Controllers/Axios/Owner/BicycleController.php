@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Axios\Owner;
 use App\Helpers\BicycleHistoryHelper;
 use App\Http\Controllers\Controller;
 use App\Model\Bicycle;
+use App\Model\BicycleHistory;
+use App\Model\BicycleRepair;
 use App\Model\Location;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -21,19 +23,37 @@ class BicycleController extends Controller
     public function paginateBicycles()
     {
         $bicycles = Bicycle::paginate(10);
-        return json_encode($bicycles);
+        return $bicycles;
     }
 
     //TODO:: remove everything thats connected to this bike.
     //Might be an idea to make bikes nonremoveable when they out for lease.
     public function deleteBicycle(Bicycle $bicycle)
     {
-        return $bicycle->delete();
+        $bicycleHistories = BicycleHistory::where('id', $bicycle->id)->get();
+        $bicycleRepairs = BicycleRepair::where('id', $bicycle->id)->get();
+
+        $bicycle->BicycleHistory()->delete();
+        $bicycle->BicycleRepair()->delete();
+        $bicycle->delete();
     }
 
-    //TODO:: do bicycle validation
+    //Might wanna make the framenumber unique???
     public function updateBicycle(Request $request, Bicycle $bicycle)
     {
+        $messages = [
+            'framenumber.required' => 'Frame nummer is verplicht',
+            'framenumber.min' => 'Framenummer vereist minimaal 1 karakter',
+            'framenumber.max' => 'Framenummer mag maximaal 25 karakters bevatten.',
+            'lease_end.after_or_equal' => 'Eind datum kan niet eerder zijn dan start datum'
+        ];
+
+        $validatedData = $request->validate([
+            'framenumber' => 'required|min:1|max:25',
+            'lease_end' => 'required|sometimes|after_or_equal:lease_start',
+        ], $messages);
+
+
         $bicycle->framenumber = $request['framenumber'];
         $bicycle->available = $request['available'];
         $bicycle->in_repair = $request['in_repair'];
@@ -43,10 +63,20 @@ class BicycleController extends Controller
         return $bicycle;
     }
 
-
-    //TODO:: do bicycle validation
+    //Might wanna make the framenumber unique???
     public function createBicycle(Request $request)
     {
+        $messages = [
+            'framenumber.required' => 'Frame nummer is verplicht',
+            'framenumber.min' => 'Framenummer vereist minimaal 1 karakter',
+            'framenumber.max' => 'Framenummer mag maximaal 25 karakters bevatten.',
+        ];
+
+        $validatedData = $request->validate([
+            'framenumber' => 'required|min:1|max:25',
+        ], $messages);
+
+
         $array = $request->all();
 
         $bike = $this->store($array);
@@ -74,7 +104,6 @@ class BicycleController extends Controller
         ]);
     }
 
-    //TODO:: Add the where later
     /*
      * Idk what this function does..
      */
@@ -120,7 +149,7 @@ class BicycleController extends Controller
             'location' => 'required',
             'start' => 'required|sometimes|before_or_equal:end',
             'end' => 'required|sometimes|after_or_equal:start',
-        ],$messages);
+        ], $messages);
 
 
         $bicycle = Bicycle::where('id', $request['bicycle']['id'])->first();
@@ -130,7 +159,7 @@ class BicycleController extends Controller
         $bicycle->available = 0;
         $bicycle->update();
 
-        $location = Location::where('id',$request['location']['id'])->first();
+        $location = Location::where('id', $request['location']['id'])->first();
 
 
         $helperArray = [];

@@ -2,33 +2,54 @@
     <div>
         <div class="block">
             <div class="block-header block-header-default">
-                <h3 class="block-title">{{location.name}}</h3>
-                <div class="text-right">
-                    <b-button variant="block-option" class="btn-block-option" data-toggle="block-option"
-                              data-action="content_toggle"></b-button>
-                </div>
+                <h3 class="block-title">Bicycles</h3>
             </div>
             <div class="block-content">
-                <table class="table table-striped table-borderless table-vcenter">
+                <div v-if="this.loading == true" class="text-center">
+                    <div class="spinner-grow text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+                <table class="table table-striped table-borderless table-vcenter" v-else>
                     <thead class="bg-primary-dark text-light">
                     <tr>
-                        <th style="width: 33%;">Frame nummer</th>
-                        <th style="width: 33%;">huur periode</th>
-                        <th style="width: 200px;" class="text-right">Acties</th>
+                        <th style="width: 33%;">Frame number</th>
+                        <th class="d-none d-sm-table-cell">available</th>
+                        <th class="d-none d-sm-table-cell">in repair</th>
+                        <th style="width: 33%;" class="d-sm-table-cell">leased</th>
+                        <th style="width: 200px;" class="text-center">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="(bicycle,index) in bicycles" :key="index">
-                        <td>{{bicycle.framenumber}}</td>
+                    <tr v-for="(bicycle,key) in this.bicycles.data" :key="key">
                         <td>
-                                <span v-if="bicycle.lease_start && bicycle.lease_end !== null">
-                                    {{bicycle.lease_start}} - {{ bicycle.lease_end}}
-                                </span>
-                            <span v-else>
-                                    -
-                                </span>
+                            <div>
+                                <span>{{bicycle.framenumber}}</span>
+                            </div>
                         </td>
-                        <td>
+                        <td class="d-none d-sm-table-cell">
+                            <div>
+                                <span v-if="bicycle.available == 0">Not available</span>
+                                <span v-else>Available</span>
+                            </div>
+                        </td>
+                        <td class="d-none d-sm-table-cell">
+                            <div>
+                                <span v-if="bicycle.in_repair == 0">Not in repair</span>
+                                <span v-else>In repair</span>
+                            </div>
+                        </td>
+                        <td class="d-none d-sm-table-cell">
+                            <div v-if="bicycle.lease_start && bicycle.lease_end == null">
+                                -
+                            </div>
+                            <div v-else>
+                                <span>
+                                    {{bicycle.lease_start}} - {{bicycle.lease_end}}
+                                </span>
+                            </div>
+                        </td>
+                        <td class="text-right">
                             <div class="text-right">
                                 <b-button variant="light" size="sm" class="btn-light"
                                           v-if="bicycle.requested_repair != 1"
@@ -45,8 +66,20 @@
                     </tr>
                     </tbody>
                 </table>
+                <!-- END Posts Table -->
+
+                <!-- Psts Pagincation -->
+                <div v-if="this.bicycles == null"></div>
+                <pagination v-else
+                            class="pagination-margin"
+                            size="small"
+                            :data="bicycles"
+                            @pagination-change-page="getBicycles">
+                </pagination>
+                <!-- END Posts Pagincation -->
             </div>
         </div>
+
         <b-modal v-model="requestRepair">
             <b-row v-if="errors != null">
                 <b-col>
@@ -110,6 +143,7 @@
         };
     }
 
+
     function bikeInitialState() {
         return {
             description: '',
@@ -118,29 +152,28 @@
     }
 
     export default {
-        name: "locationOverview",
-        props: [
-            'location'
-        ],
+        name: "bicycleIndex",
         data() {
             return {
+                loading: true,
                 requestRepair: false,
                 bike_to_repair: {
                     description: '',
                     bicycle: {}
                 },
                 errors: null,
-                bicycles: []
+                bicycles: {}
             };
         },
         created() {
-            setTimeout(() => {
-                this.fillBicycles();
-            }, 1000);
+            this.getBicycles();
         },
         methods: {
-            fillBicycles() {
-                this.bicycles = this.location.bicycle;
+            getBicycles() {
+                axios.get('/axios/location/all-bicycles/get').then(response => {
+                    this.bicycles = response.data;
+                    this.loading = false;
+                })
             },
             resetForm() {
                 Object.assign(this.bike_to_repair.description, formInitialState());
@@ -148,11 +181,6 @@
             initRequestRepairModal(bicycle) {
                 this.requestRepair = true;
                 this.bike_to_repair.bicycle = bicycle;
-            },
-            getBicycles() {
-                axios.get('/axios/location/' + this.location.id + '/get-bicycles').then(response => {
-                    this.bicycles = response.data;
-                });
             },
             submitRepair() {
                 axios.post('/axios/repair/request', this.bike_to_repair)

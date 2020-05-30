@@ -16,7 +16,7 @@ class isLocationManager
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::user() &&  Auth::user()->isLocationManager()) {
+        if (Auth::user() &&  Auth::user()->isLocationManager() || Auth::user()->isOwner()) {
 
             return $next($request);
         }

@@ -11,6 +11,13 @@ use Illuminate\Http\Request;
 
 class BicycleRepairController extends Controller
 {
+    public function getBicyclesCurrentlyInRepair()
+    {
+        $bicycles = BicycleRepair::where('granted',1)->where('in_progress',1)->where('is_finished',0)->with('bicycle')->get();
+
+        return $bicycles;
+    }
+
     public function getBicyclesInRepair()
     {
         $bicycles = BicycleRepair::where('granted',0)->where('is_finished',0)->with('Bicycle')->get();
@@ -104,7 +111,6 @@ class BicycleRepairController extends Controller
         return $bike;
     }
 
-    //TODO:: validation
     public function requestRepair(Request $request)
     {
         $messages = [

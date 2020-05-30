@@ -28,7 +28,11 @@
                                 </td>
                                 <td class="d-none d-sm-table-cell">
                                     <div>
-                                        <span>{{bicycle.description| truncate(35,'...')}}</span>
+                                        <span :id="`popover-description-${key}`">{{bicycle.description | truncate('35','...')}}</span>
+                                        <b-popover :target="`popover-description-${key}`" triggers="hover" placement="top">
+                                            <template v-slot:title>Omschrijving</template>
+                                            {{bicycle.description}}
+                                        </b-popover>
                                     </div>
                                 </td>
                                 <td class="text-right">

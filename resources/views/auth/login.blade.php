@@ -1,7 +1,6 @@
 @extends('layouts.login')
 
 @section('content')
-{{--    TODO:: fix the bg image.--}}
     <div class="bg-image">
         <div class="row no-gutters bg-primary-op">
             <!-- Main Section -->

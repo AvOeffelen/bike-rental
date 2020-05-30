@@ -6,24 +6,6 @@
                     <div
                         class="block-content block-content-full d-flex align-items-center justify-content-between text-primary">
                         <div>
-                            <i class="fa fa-4x fa-building"></i>
-                        </div>
-                        <div class="ml-3 text-right">
-                            <p class="text-muted mb-0">
-                                Locaties
-                            </p>
-                            <p class="font-size-h3 mb-0">
-                                {{this.counters.locations}}
-                            </p>
-                        </div>
-                    </div>
-                </a>
-            </b-col>
-            <b-col md="4" xl="4" class="invisible" data-toggle="appear">
-                <a class="block block-rounded block-link-pop" href="javascript:void(0)">
-                    <div
-                        class="block-content block-content-full d-flex align-items-center justify-content-between text-primary">
-                        <div>
                             <i class="fa fa-4x fa-bicycle"></i>
                         </div>
                         <div class="ml-3 text-right">
@@ -46,10 +28,28 @@
                         </div>
                         <div class="ml-3 text-right">
                             <p class="text-muted mb-0">
-                                Reparaties
+                                In reparatie
                             </p>
                             <p class="font-size-h3 mb-0">
-                                {{this.counters.repairs}}
+                                {{this.counters.repairsCurrently}}
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </b-col>
+            <b-col md="4" xl="4" class="invisible" data-toggle="appear">
+                <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                    <div
+                        class="block-content block-content-full d-flex align-items-center justify-content-between text-primary">
+                        <div>
+                            <i class="fa fa-4x fa-check"></i>
+                        </div>
+                        <div class="ml-3 text-right">
+                            <p class="text-muted mb-0">
+                                Repartie voltooid
+                            </p>
+                            <p class="font-size-h3 mb-0">
+                                {{this.counters.repairsFinished}}
                             </p>
                         </div>
                     </div>
@@ -61,16 +61,17 @@
                 <!-- Users -->
                 <div class="block block-rounded block-mode-loading-refresh">
                     <div class="block-header block-header-default">
-                        <h3 class="block-title">Locaties</h3>
+                        <h3 class="block-title">Reparatie aanvragen</h3>
                         <div class="block-options">
+<!--                            TODO:: fix button-->
                             <b-button variant="light" size="sm" class="btn-light text-primary" data-toggle="click-ripple"
-                                      @click="getLocations">
+                                      @click="getBicyclesRequestedRepair">
                                 <i class="si si-refresh"></i>
                             </b-button>
                         </div>
                     </div>
                     <div class="block-content">
-                        <div class="text-center" v-if="this.locations.length <= 0 && this.locationLoading == true">
+                        <div class="text-center" v-if="this.bicyclesRequestedRepair.length <= 0 && this.bicyclesRequestedRepairLoading == true">
                             <div class="spinner-grow text-primary" role="status">
                                 <span class="sr-only">Loading...</span>
                             </div>
@@ -78,24 +79,22 @@
                         <table class="table table-striped table-hover table-borderless table-vcenter font-size-sm" v-else>
                             <thead>
                             <tr class="text-uppercase">
-                                <th class="font-w700">Naam</th>
-                                <th class="d-none d-sm-table-cell font-w700"># fietsen</th>
-                                <th class="font-w700 text-center" style="width: 60px;"></th>
+                                <th class="font-w700">Frame nummer</th>
+                                <th class="d-none d-sm-table-cell font-w700">Omschrijving</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr v-for="(location,index) in this.locations" :key="index">
+                            <tr v-for="(bicycle,index) in this.bicyclesRequestedRepair" :key="index">
                                 <td>
-                                    <span class="font-w600">{{location.name}}</span>
+                                    <span class="font-w600">{{bicycle.bicycle.framenumber}}</span>
                                 </td>
                                 <td class="d-none d-sm-table-cell">
-                                    <span class="font-size-sm text-muted">{{location.bicycle_count}}</span>
-                                </td>
-                                <td class="text-center">
-                                    <b-button data-toggle="tooltip" data-placement="top" title="Bekijken"
-                                              variant="light" size="sm" class="btn-light" @click="loadLocation(location)">
-                                        <i class="fa fa-fw fa-search text-primary"></i>
-                                    </b-button>
+
+                                    <span :id="`popover-description-${index}`">{{bicycle.description | truncate('10','...')}}</span>
+                                    <b-popover :target="`popover-description-${index}`" triggers="hover" placement="top">
+                                        <template v-slot:title>Omschrijving</template>
+                                        {{bicycle.description}}
+                                    </b-popover>
                                 </td>
                             </tr>
                             </tbody>
@@ -104,7 +103,7 @@
                             <b-col>
                                 <div class="text-right">
                                     <b-button variant="light" size="sm" class="btn-light text-primary"
-                                              data-toggle="click-ripple" @click="checkLocations">
+                                              data-toggle="click-ripple" @click="goToRepairRequests">
                                         Bekijken
                                     </b-button>
                                 </div>
@@ -118,16 +117,16 @@
                 <!-- Purchases -->
                 <div class="block block-rounded block-mode-loading-refresh">
                     <div class="block-header block-header-default">
-                        <h3 class="block-title">Fietsen</h3>
+                        <h3 class="block-title">Momenteel in reparatie</h3>
                         <div class="block-options">
                             <b-button variant="light" size="sm" class="btn-light text-primary" data-toggle="click-ripple"
-                                    @click="getBicycles">
+                                      @click="getBicyclesRequestedRepair">
                                 <i class="si si-refresh"></i>
                             </b-button>
                         </div>
                     </div>
                     <div class="block-content">
-                        <div class="text-center" v-if="this.bicycles.length <= 0 && this.bicyclesLoading == true">
+                        <div class="text-center" v-if="this.bicycleCurrentlyRepair.length <= 0 && this.bicycleCurrentlyRepairLoading == true">
                             <div class="spinner-grow text-primary" role="status">
                                 <span class="sr-only">Loading...</span>
                             </div>
@@ -136,32 +135,25 @@
                             <thead>
                             <tr class="text-uppercase">
                                 <th class="font-w700">Frame nummer</th>
-                                <th class="d-none d-sm-table-cell font-w700">Lease</th>
-                                <th class="font-w700 text-center" style="width: 60px;"></th>
+                                <th class="d-none d-sm-table-cell font-w700">Start datum</th>
                             </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(bicycle,index) in this.bicycles" :key="index">
-                                    <td>
-                                        <span class="font-w600">{{bicycle.framenumber}}</span>
-                                    </td>
-                                    <td class="d-none d-sm-table-cell">
-                                        <span class="font-size-sm text-muted">{{bicycle.lease_start}} - {{bicycle.lease_end}}</span>
-                                    </td>
-                                    <td class="text-center">
-<!--                                        <b-button data-toggle="tooltip" data-placement="top" title="Bekijken"-->
-<!--                                                  variant="light" size="sm" class="btn-light">-->
-<!--                                            <i class="fa fa-fw fa-search text-primary"></i>-->
-<!--                                        </b-button>-->
-                                    </td>
-                                </tr>
+                            <tr v-for="(bicycle,index) in this.bicycleCurrentlyRepair" :key="index">
+                                <td>
+                                    <span class="font-w600">{{bicycle.bicycle.framenumber}}</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    <span class="font-size-sm text-muted">{{bicycle.started_at}}</span>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                         <b-row class="py-2">
                             <b-col>
                                 <div class="text-right">
                                     <b-button variant="light" size="sm" class="btn-light text-primary"
-                                              data-toggle="click-ripple" @click="checkBicycles">
+                                              data-toggle="click-ripple" @click="">
                                         Bekijken
                                     </b-button>
                                 </div>
@@ -177,49 +169,54 @@
 
 <script>
     export default {
-        name: "OwnerDashboard",
+        name: "MechanicDashboard",
         data() {
             return {
                 locations: [],
                 locationLoading: true,
-                bicycles: [],
-                bicyclesLoading: true,
-                counters:[]
+                bicyclesRequestedRepair: [],
+                bicyclesRequestedRepairLoading: true,
+                bicycleCurrentlyRepair:[],
+                bicycleCurrentlyRepairLoading:true,
+                counters: []
             };
         },
         created() {
-                this.getLocations();
-                this.getBicycles();
-                this.getCounters();
+            this.getBicyclesRequestedRepair();
+            this.getBicyclesCurrentlyInRepair();
+            this.getCounters();
         },
         methods: {
-            getLocations() {
-                axios.get('axios/dashboard/location/get').then(response => {
-                    this.locations = response.data;
-                    this.locationLoading = false;
+            getBicyclesRequestedRepair(){
+                axios.get('axios/repair/bicycles/repair-granted').then(response => {
+                    this.bicyclesRequestedRepair = response.data;
                 });
             },
-            getBicycles(){
-                axios.get('axios/dashboard/bicycle/get').then(response => {
-                    this.bicycles = response.data;
-                    this.bicyclesLoading = false;
+            getBicyclesCurrentlyInRepair(){
+                axios.get('axios/repair/bicycles/repair-in-progress/get').then(response => {
+                   this.bicycleCurrentlyRepair = response.data;
+                   this.bicycleCurrentlyRepairLoading = false;
                 });
             },
-            getCounters(){
+            getCounters() {
                 axios.get('axios/dashboard/counters/get').then(response => {
                     this.counters = response.data;
                 });
             },
-            checkLocations(){
+            checkLocations() {
                 let url = '/location';
                 window.location = url;
             },
-            checkBicycles(){
-              let url = '/bicycles';
-              window.location = url;
+            checkBicycles() {
+                let url = '/bicycles';
+                window.location = url;
             },
-            loadLocation(location){
-                let url = '/location/'+location.id
+            loadLocation(location) {
+                let url = '/location/' + location.id
+                window.location = url;
+            },
+            goToRepairRequests(){
+                let url = '/repair';
                 window.location = url;
             }
         }

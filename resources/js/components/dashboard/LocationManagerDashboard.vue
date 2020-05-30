@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-row>
-            <b-col md="4" xl="4" class="invisible" data-toggle="appear">
+            <b-col md="6" xl="6" class="invisible" data-toggle="appear">
                 <a class="block block-rounded block-link-pop" href="javascript:void(0)">
                     <div
                         class="block-content block-content-full d-flex align-items-center justify-content-between text-primary">
@@ -19,7 +19,7 @@
                     </div>
                 </a>
             </b-col>
-            <b-col md="4" xl="4" class="invisible" data-toggle="appear">
+            <b-col md="6" xl="6" class="invisible" data-toggle="appear">
                 <a class="block block-rounded block-link-pop" href="javascript:void(0)">
                     <div
                         class="block-content block-content-full d-flex align-items-center justify-content-between text-primary">
@@ -32,24 +32,6 @@
                             </p>
                             <p class="font-size-h3 mb-0">
                                 {{this.counters.bikes}}
-                            </p>
-                        </div>
-                    </div>
-                </a>
-            </b-col>
-            <b-col md="4" xl="4" class="invisible" data-toggle="appear">
-                <a class="block block-rounded block-link-pop" href="javascript:void(0)">
-                    <div
-                        class="block-content block-content-full d-flex align-items-center justify-content-between text-primary">
-                        <div>
-                            <i class="fa fa-4x fa-wrench"></i>
-                        </div>
-                        <div class="ml-3 text-right">
-                            <p class="text-muted mb-0">
-                                Reparaties
-                            </p>
-                            <p class="font-size-h3 mb-0">
-                                {{this.counters.repairs}}
                             </p>
                         </div>
                     </div>
@@ -104,7 +86,7 @@
                             <b-col>
                                 <div class="text-right">
                                     <b-button variant="light" size="sm" class="btn-light text-primary"
-                                              data-toggle="click-ripple" @click="checkLocations">
+                                              data-toggle="click-ripple"  @click="checkLocations">
                                         Bekijken
                                     </b-button>
                                 </div>
@@ -121,7 +103,7 @@
                         <h3 class="block-title">Fietsen</h3>
                         <div class="block-options">
                             <b-button variant="light" size="sm" class="btn-light text-primary" data-toggle="click-ripple"
-                                    @click="getBicycles">
+                                      @click="getBicycles">
                                 <i class="si si-refresh"></i>
                             </b-button>
                         </div>
@@ -141,20 +123,20 @@
                             </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(bicycle,index) in this.bicycles" :key="index">
-                                    <td>
-                                        <span class="font-w600">{{bicycle.framenumber}}</span>
-                                    </td>
-                                    <td class="d-none d-sm-table-cell">
-                                        <span class="font-size-sm text-muted">{{bicycle.lease_start}} - {{bicycle.lease_end}}</span>
-                                    </td>
-                                    <td class="text-center">
-<!--                                        <b-button data-toggle="tooltip" data-placement="top" title="Bekijken"-->
-<!--                                                  variant="light" size="sm" class="btn-light">-->
-<!--                                            <i class="fa fa-fw fa-search text-primary"></i>-->
-<!--                                        </b-button>-->
-                                    </td>
-                                </tr>
+                            <tr v-for="(bicycle,index) in this.bicycles" :key="index">
+                                <td>
+                                    <span class="font-w600">{{bicycle.framenumber}}</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    <span class="font-size-sm text-muted">{{bicycle.lease_start}} - {{bicycle.lease_end}}</span>
+                                </td>
+                                <td class="text-center">
+<!--                                    <b-button data-toggle="tooltip" data-placement="top" title="Bekijken"-->
+<!--                                              variant="light" size="sm" class="btn-light">-->
+<!--                                        <i class="fa fa-fw fa-search text-primary"></i>-->
+<!--                                    </b-button>-->
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                         <b-row class="py-2">
@@ -177,7 +159,7 @@
 
 <script>
     export default {
-        name: "OwnerDashboard",
+        name: "LocationManagerDashboard",
         data() {
             return {
                 locations: [],
@@ -188,9 +170,9 @@
             };
         },
         created() {
-                this.getLocations();
-                this.getBicycles();
-                this.getCounters();
+            this.getLocations();
+            this.getBicycles();
+            this.getCounters();
         },
         methods: {
             getLocations() {
@@ -215,8 +197,8 @@
                 window.location = url;
             },
             checkBicycles(){
-              let url = '/bicycles';
-              window.location = url;
+                let url = '/bicycles';
+                window.location = url;
             },
             loadLocation(location){
                 let url = '/location/'+location.id

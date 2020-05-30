@@ -116,6 +116,7 @@
                 options:[
                     {value:'location_manager',text:'Location Manager'},
                     {value:'mechanic',text:'Mechanic'},
+                    {value:'owner',text:'BEZORGFIETS Medwerker'},
                 ]
             };
         },
