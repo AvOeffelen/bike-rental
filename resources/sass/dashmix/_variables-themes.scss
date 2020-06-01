@@ -393,4 +393,51 @@ $theme-xplay-main-nav-submenu-dark-bg:      darken($theme-xplay-sidebar-dark-bg,
 
 $theme-xplay-btn-alt-primary-bg:            $theme-xplay-lighter;
 
+// xBike-rental Theme
+
+$theme-xbr-primary:                       #f47e57 !default;
+$theme-xbr-light:                         lighten($theme-xbr-primary, 10%) !default;
+$theme-xbr-lighter:                       lighten($theme-xbr-primary, 30%) !default;
+$theme-xbr-dark:                          darken($theme-xbr-primary, 12%) !default;
+$theme-xbr-darker:                        darken($theme-xbr-primary, 24%) !default;
+
+$theme-xbr-body-bg:                       #f2f2f2 !default;
+$theme-xbr-body-bg-dark:                  darken($theme-xbr-body-bg, 4%) !default;
+$theme-xbr-body-bg-light:                 lighten($theme-xbr-body-bg, 2%) !default;
+
+$theme-xbr-body-color:                    #574a49 !default;
+$theme-xbr-body-color-dark:               #332c2b !default;
+$theme-xbr-body-color-light:              $theme-xbr-body-bg-dark !default;
+
+$theme-xbr-link-color:                    $theme-xbr-primary !default;
+$theme-xbr-link-hover-color:              darken($theme-xbr-primary, 20%) !default;
+
+$theme-xbr-headings-color:                $theme-xbr-body-color-dark !default;
+
+$theme-xbr-input-btn-focus-color:         rgba($theme-xbr-primary, .25) !default;
+$theme-xbr-input-btn-focus-box-shadow:    0 0 0 $input-btn-focus-width $theme-xbr-input-btn-focus-color !default;
+
+$theme-xbr-input-bg:                      $white !default;
+$theme-xbr-input-color:                   $theme-xbr-body-color !default;
+$theme-xbr-input-border-color:            darken($theme-xbr-body-bg, 8%) !default;
+
+$theme-xbr-input-focus-bg:                $white !default;
+$theme-xbr-input-focus-color:             $theme-xbr-body-color-dark !default;
+$theme-xbr-input-focus-border-color:      lighten($theme-xbr-primary, 25%) !default;
+
+$theme-xbr-header-bg:                     $white !default;
+$theme-xbr-header-dark-bg:                $theme-xbr-primary !default;
+$theme-xbr-sidebar-bg:                    $white !default;
+$theme-xbr-sidebar-dark-bg:               #35393e !default;
+$theme-xbr-side-overlay-bg:               $white !default;
+
+$theme-xbr-main-nav-link-icon-color:      lighten($theme-xbr-body-color, 20%) !default;
+$theme-xbr-main-nav-link-hover-bg:        $theme-xbr-body-bg-dark !default;
+$theme-xbr-main-nav-submenu-bg:           $theme-xbr-body-bg-light !default;
+
+$theme-xbr-main-nav-link-icon-dark-color: rgba($white, .45) !default;
+$theme-xbr-main-nav-link-dark-hover-bg:   darken($theme-xbr-sidebar-dark-bg, 8%) !default;
+$theme-xbr-main-nav-submenu-dark-bg:      darken($theme-xbr-sidebar-dark-bg, 3%) !default;
+
+$theme-xbr-btn-alt-primary-bg:            $theme-xbr-lighter;
 

@@ -1,0 +1,63 @@
+@extends('layouts.login')
+
+@section('content')
+    <div class="bg-image">
+        <div class="row no-gutters bg-primary-op">
+            <!-- Main Section -->
+            <div class="hero-static col-md-6 d-flex align-items-center bg-white">
+                <div class="p-3 w-100">
+                    <!-- Header -->
+                    <div class="mb-3 text-center">
+                        <a class="link-fx font-w700 font-size-h1" href="index.html">
+                            <span class="text-dark">BEZORG</span><span class="text-primary">FIETS</span>
+                        </a>
+                        <p class="text-uppercase font-w700 font-size-sm text-muted">Sign In</p>
+                    </div>
+                    <div class="row no-gutters justify-content-center">
+                        <div class="col-sm-8 col-xl-6">
+                            <form method="POST" action="{{ url('/login') }}">
+                                @csrf
+                                <div class="py-3">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control form-control-lg form-control-alt" id="login-username" name="email" placeholder="E-mail">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="password" class="form-control form-control-lg form-control-alt" id="login-password" name="password" placeholder="Password">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-block btn-hero-lg btn-hero-primary">
+                                        <i class="fa fa-fw fa-sign-in-alt mr-1"></i> Sign In
+                                    </button>
+                                    <p class="mt-3 mb-0 d-lg-flex justify-content-lg-between">
+                                        <a class="btn btn-sm btn-light d-block d-lg-inline-block mb-1" href="op_auth_reminder.html">
+                                            <i class="fa fa-exclamation-triangle text-muted mr-1"></i> Forgot password
+                                        </a>
+                                        <a class="btn btn-sm btn-light d-block d-lg-inline-block mb-1" href="op_auth_signup.html">
+                                            <i class="fa fa-plus text-muted mr-1"></i> New Account
+                                        </a>
+                                    </p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- END Sign In Form -->
+                </div>
+            </div>
+            <!-- END Main Section -->
+
+            <!-- Meta Info Section -->
+            <div class="hero-static col-md-6 d-none d-md-flex align-items-md-center justify-content-md-center text-md-center">
+                <div class="p-3">
+                    <p class="display-4 font-w700 text-white mb-3">
+                        Welcome to the future
+                    </p>
+                    <p class="font-size-lg font-w600 text-white-75 mb-0">
+                        Copyright &copy; <span data-toggle="year-copy"></span>
+                    </p>
+                </div>
+            </div>
+            <!-- END Meta Info Section -->
+        </div>
+    </div>
+@endsection

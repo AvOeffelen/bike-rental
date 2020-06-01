@@ -1,0 +1,42 @@
+//
+// xBr Theme
+// --------------------------------------------------
+
+// Include base files
+@import 'base';
+
+// Generate color theme
+@include color-theme($theme-xbr-primary,
+    $theme-xbr-light,
+    $theme-xbr-lighter,
+    $theme-xbr-dark,
+    $theme-xbr-darker,
+    $theme-xbr-body-bg,
+    $theme-xbr-body-bg-dark,
+    $theme-xbr-body-bg-light,
+    $theme-xbr-body-color,
+    $theme-xbr-body-color-dark,
+    $theme-xbr-body-color-light,
+    $theme-xbr-link-color,
+    $theme-xbr-link-hover-color,
+    $theme-xbr-headings-color,
+    $theme-xbr-input-btn-focus-color,
+    $theme-xbr-input-btn-focus-box-shadow,
+    $theme-xbr-input-bg,
+    $theme-xbr-input-color,
+    $theme-xbr-input-border-color,
+    $theme-xbr-input-focus-bg,
+    $theme-xbr-input-focus-color,
+    $theme-xbr-input-focus-border-color,
+    $theme-xbr-header-bg,
+    $theme-xbr-header-dark-bg,
+    $theme-xbr-sidebar-bg,
+    $theme-xbr-sidebar-dark-bg,
+    $theme-xbr-side-overlay-bg,
+    $theme-xbr-main-nav-link-icon-color,
+    $theme-xbr-main-nav-link-hover-bg,
+    $theme-xbr-main-nav-submenu-bg,
+    $theme-xbr-main-nav-link-icon-dark-color,
+    $theme-xbr-main-nav-link-dark-hover-bg,
+    $theme-xbr-main-nav-submenu-dark-bg,
+    $theme-xbr-btn-alt-primary-bg);
