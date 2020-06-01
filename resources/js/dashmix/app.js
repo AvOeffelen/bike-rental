@@ -17,7 +17,7 @@ Vue.component('sign-up',require('../components/auth/signup').default);
 Vue.component('location-manager-index',require('../components/location/manager/LocationIndex').default);
 Vue.component('multiselect',Multiselect);
 Vue.component('location-overview',require('../components/location/LocationOverview').default);
-Vue.component('location-manager-overview',require('../components/location/manager/locationOverview').default);
+Vue.component('location-manager-overview',require('../components/location/manager/LocationOverview').default);
 Vue.component('location-mechanic-overview',require('../components/location/mechanic/LocationOverview').default);
 Vue.component('location-mechanic-index',require('../components/location/mechanic/LocationIndex').default);
 Vue.component('user-index',require('../components/users/UserIndex').default);
