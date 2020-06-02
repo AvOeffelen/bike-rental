@@ -18,14 +18,14 @@
                             <form action="{{action('SignUpController@finishSignUp',$invite)}}" method="POST">
                                 @csrf
                                 <div class="py-2">
-                                    @if($invite->used !== 0)
-                                        <div class="text-center">
-                                            <span class="help-block">
-                                                <strong
-                                                    class="text-danger">Invite is already used by someone else!</strong>
-                                            </span>
-                                        </div>
-                                    @endif
+{{--                                    @if($invite->used !== 0)--}}
+{{--                                        <div class="text-center">--}}
+{{--                                            <span class="help-block">--}}
+{{--                                                <strong--}}
+{{--                                                    class="text-danger">Invite is already used by someone else!</strong>--}}
+{{--                                            </span>--}}
+{{--                                        </div>--}}
+{{--                                    @endif--}}
                                     <div class="form-group">
                                         <label for="name">Voornaam <span class="text-danger">*</span></label>
                                         <input type="text"
