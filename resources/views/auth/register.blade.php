@@ -18,8 +18,8 @@
                             <form action="{{action('SignUpController@finishSignUp',$invite)}}" method="POST">
                                 @csrf
                                 <div class="py-2">
+                                    {{$invite}}
                                     @if($invite->used === 1)
-                                        {{$invite}}
                                         <div class="text-center">
                                             <span class="help-block">
                                                 <strong
