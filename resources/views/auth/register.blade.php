@@ -22,7 +22,7 @@
                                         <div class="text-center">
                                             <span class="help-block">
                                                 <strong
-                                                    class="text-danger">Invite is already used by someone else.</strong>
+                                                    class="text-danger">Invite is already used by someone else!</strong>
                                             </span>
                                         </div>
                                     @endif
