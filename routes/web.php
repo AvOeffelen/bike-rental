@@ -89,6 +89,8 @@ Route::group(['prefix' => 'axios/repair', 'namespace' => 'Axios'], function () {
 });
 Route::group(['prefix' => 'axios/location','namespace'=> 'Axios','middleware' => ['web']], function () {
     Route::get('get','LocationController@getLocations')->name('location.show');
+    Route::get('/managers/get','LocationController@getManagers')->name('location.show');
     Route::get('/{location}/get-bicycles','LocationController@getBicycles')->name('location.bicycles');
     Route::get('/all-bicycles/get','LocationController@getAllBicycles')->name('axios.location.get.all.bicycles');
+    Route::post('/link','LocationController@linkLocation')->name('axios.location.link');
 });

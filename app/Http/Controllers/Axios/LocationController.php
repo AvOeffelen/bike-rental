@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Axios;
 
 use App\Http\Controllers\Controller;
 use App\Model\Location;
+use App\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -11,19 +12,31 @@ use Illuminate\Pagination\Paginator;
 
 class LocationController extends Controller
 {
+    public function linkLocation(Request $request)
+    {
+        $location = Location::where('id', $request['location']['id'])->first();
+
+        $location->managed_by = $request['manager']['id'];
+        $location->update();
+    }
+
+    public function getManagers()
+    {
+        $users = User::where('type', 'location_manager')->get();
+
+        return $users;
+    }
 
     public function getLocations()
     {
-        if(auth()->user()->isLocationManager()){
-            $locations = Location::where('managed_by',auth()->user()->id)->where('is_workplace',0)->withCount('bicycle')->get();
+        if (auth()->user()->isLocationManager()) {
+            $locations = Location::where('managed_by', auth()->user()->id)->where('is_workplace', 0)->withCount('bicycle')->get();
             return json_encode($locations);
-        }
-         elseif (auth()->user()->isMechanic()){
-            $locations = Location::where('is_workplace',1)->withCount('bicycle')->with('bicycle')->get();
-             return json_encode($locations);
-        }
-        else{
-            $locations = Location::withCount('bicycle')->where('is_workplace',0)->get();
+        } elseif (auth()->user()->isMechanic()) {
+            $locations = Location::where('is_workplace', 1)->withCount('bicycle')->with('bicycle')->get();
+            return json_encode($locations);
+        } else {
+            $locations = Location::withCount('bicycle')->where('is_workplace', 0)->get();
             return json_encode($locations);
         }
 
@@ -37,15 +50,15 @@ class LocationController extends Controller
 
     public function getAllBicycles()
     {
-        $locations = Location::where('managed_by',auth()->user()->id)->with('bicycle')->get();
+        $locations = Location::where('managed_by', auth()->user()->id)->with('bicycle')->get();
         $bicycles = new Collection();
-        foreach($locations as $index => $location){
-            foreach($location->bicycle as $bicycle){
+        foreach ($locations as $index => $location) {
+            foreach ($location->bicycle as $bicycle) {
                 $bicycles->push($bicycle);
             }
         }
 
-       return $this->paginate($bicycles,10);
+        return $this->paginate($bicycles, 10);
     }
 
     public function paginate($items, $perPage = 15, $page = null, $options = [])
