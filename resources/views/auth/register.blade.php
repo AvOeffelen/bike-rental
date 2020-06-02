@@ -18,7 +18,7 @@
                             <form action="{{action('SignUpController@finishSignUp',$invite)}}" method="POST">
                                 @csrf
                                 <div class="py-2">
-                                    @if($invite->used !== 0)
+                                    @if($invite->used === 1)
                                         <div class="text-center">
                                             <span class="help-block">
                                                 <strong
