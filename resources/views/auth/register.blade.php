@@ -19,6 +19,7 @@
                                 @csrf
                                 <div class="py-2">
                                     @if($invite->used === 1)
+                                        {{$invite}}
                                         <div class="text-center">
                                             <span class="help-block">
                                                 <strong
