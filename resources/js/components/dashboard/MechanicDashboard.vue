@@ -190,6 +190,7 @@
             getBicyclesRequestedRepair(){
                 axios.get('axios/repair/bicycles/repair-granted').then(response => {
                     this.bicyclesRequestedRepair = response.data;
+                    this.bicyclesRequestedRepairLoading = false;
                 });
             },
             getBicyclesCurrentlyInRepair(){
