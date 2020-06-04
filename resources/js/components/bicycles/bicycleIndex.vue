@@ -49,14 +49,10 @@
                                               class="form-control form-control"></b-form-input>
                             </td>
                             <td class="d-none d-sm-table-cell">
-                                <b-form-select v-model="new_bicycle.available"
-                                               class="custom-select form-control form-control"
-                                               :options="options"></b-form-select>
+                                Available
                             </td>
                             <td class="d-none d-sm-table-cell">
-                                <b-form-select v-model="new_bicycle.available"
-                                               class="custom-select form-control form-control"
-                                               :options="options"></b-form-select>
+                                Not in repair
                             </td>
                             <td>
                                 -
@@ -93,15 +89,8 @@
                                 </div>
                             </td>
                             <td class="d-none d-sm-table-cell">
-                                <div v-if="isEditing.currently == true && isEditing.key == key">
-                                    <b-form-select v-model="bicycle.in_repair"
-                                                   class="custom-select form-control form-control"
-                                                   :options="options"></b-form-select>
-                                </div>
-                                <div v-else>
-                                    <span v-if="bicycle.in_repair == 0">Not in repair</span>
-                                    <span v-else>In repair</span>
-                                </div>
+                                <span v-if="bicycle.in_repair == 0">Not in repair</span>
+                                <span v-else>In repair</span>
                             </td>
                             <td class="d-none d-sm-table-cell">
                                 <div v-if="bicycle.lease_start && bicycle.lease_end == null">
@@ -317,8 +306,8 @@
                         currently: false,
                         key: null
                     },
-                errors:[],
-                errors2:[],
+                errors: [],
+                errors2: [],
                 addToLocationModal: false,
                 bicycleTransferInformation: {
                     bicycle: null,
