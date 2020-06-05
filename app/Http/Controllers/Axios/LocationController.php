@@ -27,6 +27,17 @@ class LocationController extends Controller
         return $users;
     }
 
+    public function removeLocation(Location $location)
+    {
+        $bicycles = $location->bicycle;
+        foreach($bicycles as $bicycle){
+            $bicycle->location_id = null;
+            $bicycle->update();
+        }
+
+        $location->delete();
+    }
+
     public function getLocations()
     {
         if (auth()->user()->isLocationManager()) {

@@ -46,6 +46,10 @@
                                 <b-button variant="light" size="sm" class="btn-light" @click="loadLocation(location)">
                                     <i class="fa fa-fw fa-search text-primary"></i>
                                 </b-button>
+                                <b-button variant="light" size="sm" class="btn-light"
+                                          @click="initRemoveLocationModal(location)">
+                                    <i class="fa fa-fw fa-trash text-primary"></i>
+                                </b-button>
                             </div>
                         </td>
                     </tr>
@@ -79,6 +83,15 @@
                 <b-button variant="alt-primary" size="sm" @click="linkLocationx">submit</b-button>
             </template>
         </b-modal>
+        <b-modal v-model="removeLocationModal">
+            <div v-if="tempLocation != null">
+                <p>Weet je zeker dat je {{this.tempLocation.name}} wilt verwijderen?</p>
+            </div>
+            <template v-slot:modal-footer>
+                <b-button size="sm" variant="danger" @click="closeLocationRemovalModal">Cancel</b-button>
+                <b-button variant="alt-primary" size="sm" @click="removeLocation">submit</b-button>
+            </template>
+        </b-modal>
     </div>
 </template>
 
@@ -97,7 +110,9 @@
                 linkLocation: {
                     manager: null,
                     location: null
-                }
+                },
+                removeLocationModal: false,
+                tempLocation: null
             };
         },
         created() {
@@ -110,12 +125,29 @@
             });
         },
         methods: {
+            removeLocation() {
+                let url = 'axios/location/'+this.tempLocation.id+'/delete';
+                axios.delete(url)
+                    .then(response => {
+                        this.getLocations();
+                        this.closeLocationRemovalModal();
+                        this.$toast.success("Locatie succesvol verwijderd!");
+                    });
+            },
+            initRemoveLocationModal(location) {
+                this.removeLocationModal = true;
+                this.tempLocation = location;
+            },
             linkLocationx() {
                 axios.post('axios/location/link', this.linkLocation)
                     .then(response => {
                         this.getLocations();
                         this.linkLocationModal = false
                     });
+            },
+            closeLocationRemovalModal() {
+                this.removeLocationModal = false;
+                this.tempLocation = null;
             },
             closeLinkLocationModal() {
                 this.linkLocationModal = false

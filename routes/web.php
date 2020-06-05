@@ -60,6 +60,7 @@ Route::group(['prefix' => 'axios/bicycle', 'namespace' => 'Axios\Owner'], functi
 Route::group(['prefix' => 'axios/users', 'namespace' => 'Axios\Owner'], function () {
     Route::get('/get','UserController@getUsers')->name('axios.users.get');
     Route::post('/invite','UserController@sendInvite')->name('axios.users.send.invite');
+    Route::delete('{user}/delete','UserController@removeUser')->name('axios.users.delete');
 });
 Route::group(['prefix' => 'axios/dashboard', 'namespace' => 'Axios'], function () {
     Route::get('/location/get','DashboardController@getLocations')->name('axios.users.get');
@@ -93,4 +94,5 @@ Route::group(['prefix' => 'axios/location','namespace'=> 'Axios','middleware' =>
     Route::get('/{location}/get-bicycles','LocationController@getBicycles')->name('location.bicycles');
     Route::get('/all-bicycles/get','LocationController@getAllBicycles')->name('axios.location.get.all.bicycles');
     Route::post('/link','LocationController@linkLocation')->name('axios.location.link');
+    Route::delete('/{location}/delete','LocationController@removeLocation')->name('axios.location.remove');
 });
