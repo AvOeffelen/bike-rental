@@ -11,29 +11,26 @@
                     </div>
                 </div>
                 <div v-else>
-                    <b-row v-if="errors.length != 0">
-                        <b-col>
-                            <div class="block block-bordered">
-                                <div class="block-header block-header-default">
-                                    <h4 class="block-title">Er zijn fouten geconstateerd in het formulier.</h4>
-                                    <div class="text-right">
-                                        <b-button variant="block-option" data-toggle="block-option"
-                                                  data-action="content_toggle">
-                                            <i class="si si-arrow-up"></i>
-                                        </b-button>
+                    <div v-if="errors.length !== 0">
+                        <b-row>
+                            <b-col>
+                                <div class="block block-bordered">
+                                    <div class="block-header block-header-default">
+                                        <h4 class="block-title">Er zijn fouten geconstateerd in het formulier.</h4>
+                                    </div>
+                                    <div class="block-content">
+                                        <ul>
+                                            <li class="text-danger" v-for="(error,index) in this.errors" :key="index">
+                                                {{error[0]}}
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
-                                <div class="block-content">
-                                    <ul>
-                                        <li class="text-danger" v-for="(error,index) in this.errors" :key="index">
-                                            {{error[0]}}
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </b-col>
-                    </b-row>
-
+                            </b-col>
+                        </b-row>
+                    </div>
+                    <div v-else>
+                    </div>
                     <table class="table table-striped table-borderless table-vcenter">
                         <thead class="bg-primary-dark text-light">
                         <tr>
@@ -52,14 +49,10 @@
                                               class="form-control form-control"></b-form-input>
                             </td>
                             <td class="d-none d-sm-table-cell">
-                                <b-form-select v-model="new_bicycle.available"
-                                               class="custom-select form-control form-control"
-                                               :options="options"></b-form-select>
+                                Available
                             </td>
                             <td class="d-none d-sm-table-cell">
-                                <b-form-select v-model="new_bicycle.available"
-                                               class="custom-select form-control form-control"
-                                               :options="options"></b-form-select>
+                                Not in repair
                             </td>
                             <td>
                                 -
@@ -96,15 +89,8 @@
                                 </div>
                             </td>
                             <td class="d-none d-sm-table-cell">
-                                <div v-if="isEditing.currently == true && isEditing.key == key">
-                                    <b-form-select v-model="bicycle.in_repair"
-                                                   class="custom-select form-control form-control"
-                                                   :options="options"></b-form-select>
-                                </div>
-                                <div v-else>
-                                    <span v-if="bicycle.in_repair == 0">Not in repair</span>
-                                    <span v-else>In repair</span>
-                                </div>
+                                <span v-if="bicycle.in_repair == 0">Not in repair</span>
+                                <span v-else>In repair</span>
                             </td>
                             <td class="d-none d-sm-table-cell">
                                 <div v-if="bicycle.lease_start && bicycle.lease_end == null">
@@ -189,7 +175,7 @@
                         {{this.bicycleTransferInformation.bicycle.framenumber}}</p>
                 </b-col>
             </b-row>
-            <b-row v-if="errors != null">
+            <b-row v-if="errors2.length !== 0">
                 <b-col>
                     <div class="block block-bordered">
                         <div class="block-header block-header-default">
@@ -203,7 +189,7 @@
                         </div>
                         <div class="block-content">
                             <ul>
-                                <li class="text-danger" v-for="(error,index) in this.errors" :key="index">
+                                <li class="text-danger" v-for="(error,index) in this.errors2" :key="index">
                                     {{error[0]}}
                                 </li>
                             </ul>
@@ -321,6 +307,7 @@
                         key: null
                     },
                 errors: [],
+                errors2: [],
                 addToLocationModal: false,
                 bicycleTransferInformation: {
                     bicycle: null,
@@ -388,12 +375,12 @@
                             }
                         }
                         Object.assign(this.bicycleTransferInformation, initialBikeTransferState());
-                        Object.assign(this.errors, initErrorState());
+                        Object.assign(this.errors2, initErrorState());
                     })
                     .catch(error => {
                         console.log(error);
                         if (error.response.status == 422) {
-                            this.errors = error.response.data.errors;
+                            this.errors2 = error.response.data.errors;
                         }
                     });
             },

@@ -26,8 +26,6 @@ class BicycleController extends Controller
         return $bicycles;
     }
 
-    //TODO:: remove everything thats connected to this bike.
-    //Might be an idea to make bikes nonremoveable when they out for lease.
     public function deleteBicycle(Bicycle $bicycle)
     {
         $bicycleHistories = BicycleHistory::where('id', $bicycle->id)->get();

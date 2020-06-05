@@ -30,11 +30,8 @@
                                         <i class="fa fa-fw fa-sign-in-alt mr-1"></i> Sign In
                                     </button>
                                     <p class="mt-3 mb-0 d-lg-flex justify-content-lg-between">
-                                        <a class="btn btn-sm btn-light d-block d-lg-inline-block mb-1" href="op_auth_reminder.html">
+                                        <a class="btn btn-sm btn-light d-block d-lg-inline-block mb-1" href="{{ route('password.request') }}">
                                             <i class="fa fa-exclamation-triangle text-muted mr-1"></i> Forgot password
-                                        </a>
-                                        <a class="btn btn-sm btn-light d-block d-lg-inline-block mb-1" href="op_auth_signup.html">
-                                            <i class="fa fa-plus text-muted mr-1"></i> New Account
                                         </a>
                                     </p>
                                 </div>
