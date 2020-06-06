@@ -76,7 +76,8 @@
                     <tr>
                         <th style="width: 33%;">Name</th>
                         <th class="d-none d-sm-table-cell">email</th>
-                        <th style="width: 200px;" class="text-center">type</th>
+                        <th class="d-none d-sm-table-cell">type</th>
+                        <th style="width: 200px;" class="text-center">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -87,9 +88,14 @@
                         <td class="d-none d-sm-table-cell">
                             <span>{{user.email}}</span>
                         </td>
+                        <td>
+                            <span v-if="user.type == 'location_manager'">Locatie manager</span>
+                            <span v-else-if="user.type == 'owner'">BEZORGFIETS Medwerker</span>
+                            <span v-else>Fietsenmaker</span>
+                        </td>
                         <td class="text-right">
                             <b-button variant="light" size="sm" class="btn-light"
-                                      @click="removeUser(user,key)">
+                                      @click="openUserRemovalConfirmationModal(user,key)">
                                 <i class="fa fa-fw fa-trash text-primary"></i>
                             </b-button>
                         </td>
@@ -98,6 +104,15 @@
                 </table>
             </div>
         </div>
+        <b-modal v-model="userRemovalConfirmationModal">
+            <div v-if="tempUser != null">
+                <p>Weet je zeker dat je {{this.tempUser.name}} wilt verwijderen? </p>
+            </div>
+            <template v-slot:modal-footer>
+                <b-button size="danger" data-toggle="click-ripple" @click="closeModal">cancel</b-button>
+                <b-button size="alt-primary" data-toggle="click-ripple" @click="removeUser">delete</b-button>
+            </template>
+        </b-modal>
     </div>
 </template>
 
@@ -107,35 +122,54 @@
         data() {
             return {
                 users: [],
-                contact:{
-                    name:'',
-                    lastname:'',
-                    email:'',
-                    type:'location_manager'
+                contact: {
+                    name: '',
+                    lastname: '',
+                    email: '',
+                    type: 'location_manager'
                 },
-                options:[
-                    {value:'location_manager',text:'Location Manager'},
-                    {value:'mechanic',text:'Mechanic'},
-                    {value:'owner',text:'BEZORGFIETS Medwerker'},
-                ]
+                options: [
+                    {value: 'location_manager', text: 'Location Manager'},
+                    {value: 'mechanic', text: 'Mechanic'},
+                    {value: 'owner', text: 'BEZORGFIETS Medwerker'},
+                ],
+                userRemovalConfirmationModal: false,
+                tempUser: null
             };
         },
         created() {
             this.getUsers();
         },
         methods: {
+            removeUser() {
+                let url = 'axios/users/' + this.tempUser.id + '/delete'
+                axios.delete(url)
+                    .then(response => {
+                        this.$toast.success("Gebruiker succesvol verwijderd!");
+                        this.getUsers();
+                        this.closeModal();
+                    });
+            },
+            closeModal() {
+                this.tempUser = null
+                this.userRemovalConfirmationModal = false;
+            },
+            openUserRemovalConfirmationModal(user, key) {
+                this.userRemovalConfirmationModal = true;
+                this.tempUser = user;
+            },
             getUsers() {
                 axios.get('axios/users/get')
                     .then(response => {
                         this.users = response.data;
                     });
             },
-            submit(){
-                axios.post('axios/users/invite',this.contact).then( response => {
+            submit() {
+                axios.post('axios/users/invite', this.contact).then(response => {
                     this.$toast.success("Uitnodiging verstuurd!");
                 });
             },
-            resetForm(){
+            resetForm() {
 
             }
         }
