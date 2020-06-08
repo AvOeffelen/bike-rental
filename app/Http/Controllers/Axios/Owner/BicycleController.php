@@ -163,7 +163,7 @@ class BicycleController extends Controller
         $helperArray = [];
         $helperArray['id'] = $bicycle->id;
         $helperArray['title'] = 'Fiets verhuurd';
-        $helperArray['description'] = 'Fiets word verhuurd aan locatie ' .
+        $helperArray['description'] = 'Fiets word verhuurd aan locatie: ' .
             $location->name .
             '. periode start op ' .
             $bicycle->lease_start->format('d-m-Y') .

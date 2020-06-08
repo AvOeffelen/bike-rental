@@ -16,5 +16,11 @@ class BicycleController extends Controller
         return $bicycles;
     }
 
+    public function getAvailableBicycles()
+    {
+        $bicycles = Bicycle::where('available',1)->where('in_repair',0)->whereNull('lease_start')->whereNull('lease_end')->whereNull('location_id')->get();
+
+        return $bicycles;
+    }
 
 }

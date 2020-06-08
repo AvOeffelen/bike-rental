@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Axios;
 
 use App\Helpers\BicycleHistoryHelper;
 use App\Http\Controllers\Controller;
+use App\Model\Bicycle;
 use App\Model\BicycleRepair;
 use App\Model\Location;
 use Carbon\Carbon;
@@ -33,18 +34,24 @@ class BicycleRepairController extends Controller
 
     public function acceptRequest(Request $request)
     {
-        $requestBike = BicycleRepair::where('id',$request['id'])->first();
+        $requestBike = BicycleRepair::where('id',$request['bicycle']['id'])->first();
 
         $requestBike->granted = 1;
         $requestBike->update();
 
         $bike = $requestBike->Bicycle;
-        $oldLocation = $bike->location->name;
 
+        if($request['bicycle_replacement'] !== null){
+
+            $replacementBicycle = Bicycle::where('id',$request['bicycle_replacement']['id'])->first();
+            $this->ReplaceBicycle($replacementBicycle,$bike->location_id,$bike->lease_start,$bike->lease_end);
+        }
 
         $location = Location::where('is_workplace',1)->first();
 
         $bike->location_id = $location->id;
+        $bike->lease_start = null;
+        $bike->lease_end = null;
         $bike->update();
 
         $helperArray = [];
@@ -85,7 +92,7 @@ class BicycleRepairController extends Controller
 
     public function finishRepair(Request $request)
     {
-        $bike = BicycleRepair::where('id',$request['id'])->with('bicycle')->first();
+        $bike = BicycleRepair::where('id',$request['bicycle']['id'])->with('bicycle')->first();
         $bike->in_progress = 0;
         $bike->is_finished = 1;
         $bike->finished_at = Carbon::parse(Carbon::now()->timestamp);
@@ -96,14 +103,17 @@ class BicycleRepairController extends Controller
         $bicycle->requested_repair = 0;
         $bicycle->available = 1;
         $bicycle->location_id = null;
+        $bicycle->lease_start = null;
+        $bicycle->lease_end = null;
         $bicycle->update();
 
 
 
         $helperArray = [];
         $helperArray['id'] = $bicycle->id;
-        $helperArray['title'] = 'Reparatie voltooid!';
-        $helperArray['description'] = "Omschrijving klant: \"". $request['description'] . "\". Reparatie gestart op: " . $bike->started_at->format('d-m-Y') . " en is afgerond op: ". $bike->started_at->format('d-m-Y') ."." ;
+        $helperArray['title'] = 'Reparatie voltooid.';
+        $helperArray['description'] = "Omschrijving klant: \"". $request['bicycle']['description'] . "\". Reparatie gestart op: "
+            . $bike->started_at->format('d-m-Y') . " en is afgerond op: ". $bike->started_at->format('d-m-Y') .". De monteur heeft het volgende geschreven:\"".$request['description']."\"." ;
 
         $bikeHelper = new BicycleHistoryHelper();
         $bikeHelper->storeBicycleEvent($helperArray);
@@ -146,5 +156,27 @@ class BicycleRepairController extends Controller
             'bicycle_id' => $data['bicycle_id'],
             'description' => $data['description']
         ]);
+    }
+
+    protected function ReplaceBicycle(Bicycle $bicycle,$location_id,$start,$end){
+        $bicycle->location_id = $location_id;
+        $bicycle->lease_start = $start;
+        $bicycle->available = 0;
+        $bicycle->lease_end = $end;
+        $bicycle->update();
+
+        $helperArray = [];
+        $helperArray['id'] = $bicycle->id;
+        $helperArray['title'] = 'Fiets verhuurd';
+        $helperArray['description'] = 'Fiets word verhuurd aan locatie: ' .
+            $bicycle->location->name .
+            '. periode start op ' .
+            $bicycle->lease_start->format('d-m-Y') .
+            ' en eindigd op ' . $bicycle->lease_end->format('d-m-Y') . '.';
+
+        $bikeHelper = new BicycleHistoryHelper();
+        $bikeHelper->storeBicycleEvent($helperArray);
+
+        return $bicycle;
     }
 }
