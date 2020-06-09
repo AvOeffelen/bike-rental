@@ -116,7 +116,6 @@
                 this.replacement = !this.replacement;
                 if(this.replacement == false){
                     this.bicycle_info.bicycle_replacement = null;
-                    console.log(this.bicycle_info.bicycle_replacement);
                 }
             },
             acceptRepairModal(bicycle){
