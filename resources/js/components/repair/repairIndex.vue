@@ -126,6 +126,7 @@
             acceptRepair() {
                 axios.post('axios/repair/accept', this.bicycle_info).then(response => {
                     this.getBicyclesCurrentlyInRepair();
+                    this.closeModal();
                 });
             },
             // getBicycles() {
