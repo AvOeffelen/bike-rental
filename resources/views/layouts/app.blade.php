@@ -4,6 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>{{config('app.name')}}</title>
+
+    <meta name="description"
+          content="Bezorgfiets is de leverancier voor E-bikes die gebruikt worden bezorgbedrijven">
+    <meta name="author" content="Rmnd Design">
+    <meta name="robots" content="noindex, nofollow">
+
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
