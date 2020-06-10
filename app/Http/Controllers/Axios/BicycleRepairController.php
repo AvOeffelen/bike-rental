@@ -34,6 +34,7 @@ class BicycleRepairController extends Controller
 
     public function acceptRequest(Request $request)
     {
+
         $requestBike = BicycleRepair::where('id',$request['bicycle']['id'])->first();
 
         $requestBike->granted = 1;
@@ -41,12 +42,13 @@ class BicycleRepairController extends Controller
 
         $bike = $requestBike->Bicycle;
 
+
+
         if($request['bicycle_replacement'] !== null){
 
             $replacementBicycle = Bicycle::where('id',$request['bicycle_replacement']['id'])->first();
             $this->ReplaceBicycle($replacementBicycle,$bike->location_id,$bike->lease_start,$bike->lease_end);
         }
-
         $location = Location::where('is_workplace',1)->first();
 
         $bike->location_id = $location->id;

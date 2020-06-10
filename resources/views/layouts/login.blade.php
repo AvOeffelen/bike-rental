@@ -6,9 +6,12 @@
 
     <title>{{config('app.name')}}</title>
 
+
+    <title>{{config('app.name')}}</title>
+
     <meta name="description"
-          content="Dashmix - Bootstrap 4 Admin Template &amp; UI Framework created by pixelcave and published on Themeforest">
-    <meta name="author" content="pixelcave">
+          content="Bezorgfiets is de leverancier voor E-bikes die gebruikt worden bezorgbedrijven">
+    <meta name="author" content="Rmnd Design">
     <meta name="robots" content="noindex, nofollow">
 
     <!-- CSRF Token -->

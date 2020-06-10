@@ -173,8 +173,16 @@
             this.getLocations();
             this.getBicycles();
             this.getCounters();
+            this.interval();
         },
         methods: {
+            interval(){
+                setInterval(()=>{
+                    this.getLocations();
+                    this.getBicycles();
+                    this.getCounters();
+                },300000);
+            },
             getLocations() {
                 axios.get('axios/dashboard/location/get').then(response => {
                     this.locations = response.data;

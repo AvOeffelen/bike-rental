@@ -8,7 +8,7 @@
                 <div class="p-3 w-100">
                     <!-- Header -->
                     <div class="mb-3 text-center">
-                        <a class="link-fx font-w700 font-size-h1" href="index.html">
+                        <a class="link-fx font-w700 font-size-h1" href="#">
                             <span class="text-dark">BEZORG</span><span class="text-primary">FIETS</span>
                         </a>
                         <p class="text-uppercase font-w700 font-size-sm text-muted">Sign In</p>
@@ -42,7 +42,6 @@
                 </div>
             </div>
             <!-- END Main Section -->
-
             <!-- Meta Info Section -->
             <div class="hero-static col-md-6 d-none d-md-flex align-items-md-center justify-content-md-center text-md-center">
                 <div class="p-3">

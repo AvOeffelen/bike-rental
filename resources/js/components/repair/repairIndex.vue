@@ -78,7 +78,7 @@
             </b-row>
             <template v-slot:modal-footer>
                 <b-button size="danger" data-toggle="click-ripple" @click="closeModal">cancel</b-button>
-                <b-button size="alt-primary" data-toggle="click-ripple" @click="acceptRepair">add</b-button>
+                <b-button size="alt-primary" data-toggle="click-ripple" @click="acceptRepair">accept</b-button>
             </template>
         </b-modal>
     </div>
@@ -116,7 +116,6 @@
                 this.replacement = !this.replacement;
                 if(this.replacement == false){
                     this.bicycle_info.bicycle_replacement = null;
-                    console.log(this.bicycle_info.bicycle_replacement);
                 }
             },
             acceptRepairModal(bicycle){

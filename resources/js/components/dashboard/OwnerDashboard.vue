@@ -2,7 +2,7 @@
     <div>
         <b-row>
             <b-col md="4" xl="4" class="invisible" data-toggle="appear">
-                <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                <a class="block block-rounded block-link-pop" href="/location">
                     <div
                         class="block-content block-content-full d-flex align-items-center justify-content-between text-primary">
                         <div>
@@ -20,7 +20,7 @@
                 </a>
             </b-col>
             <b-col md="4" xl="4" class="invisible" data-toggle="appear">
-                <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                <a class="block block-rounded block-link-pop" href="/bicycles">
                     <div
                         class="block-content block-content-full d-flex align-items-center justify-content-between text-primary">
                         <div>
@@ -38,7 +38,7 @@
                 </a>
             </b-col>
             <b-col md="4" xl="4" class="invisible" data-toggle="appear">
-                <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                <a class="block block-rounded block-link-pop" href="/repair">
                     <div
                         class="block-content block-content-full d-flex align-items-center justify-content-between text-primary">
                         <div>
@@ -46,10 +46,10 @@
                         </div>
                         <div class="ml-3 text-right">
                             <p class="text-muted mb-0">
-                                Reparaties
+                                In reparatie
                             </p>
                             <p class="font-size-h3 mb-0">
-                                {{this.counters.repairs}}
+                                {{this.counters.repairsCurrently}}
                             </p>
                         </div>
                     </div>
@@ -188,11 +188,19 @@
             };
         },
         created() {
-                this.getLocations();
-                this.getBicycles();
-                this.getCounters();
+            this.getLocations();
+            this.getBicycles();
+            this.getCounters();
+            this.interval();
         },
         methods: {
+            interval(){
+                setInterval(()=>{
+                    this.getLocations();
+                    this.getBicycles();
+                    this.getCounters();
+                },300000);
+            },
             getLocations() {
                 axios.get('axios/dashboard/location/get').then(response => {
                     this.locations = response.data;

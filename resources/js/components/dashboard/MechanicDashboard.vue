@@ -2,25 +2,25 @@
     <div>
         <b-row>
             <b-col md="4" xl="4" class="invisible" data-toggle="appear">
-                <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                <a class="block block-rounded block-link-pop" href="/repair">
                     <div
                         class="block-content block-content-full d-flex align-items-center justify-content-between text-primary">
                         <div>
-                            <i class="fa fa-4x fa-bicycle"></i>
+                            <i class="fa fa-4x fa-hammer"></i>
                         </div>
                         <div class="ml-3 text-right">
                             <p class="text-muted mb-0">
-                                Fietsen
+                                Reparatie aanvragen
                             </p>
                             <p class="font-size-h3 mb-0">
-                                {{this.counters.bikes}}
+                                {{this.counters.repairs}}
                             </p>
                         </div>
                     </div>
                 </a>
             </b-col>
             <b-col md="4" xl="4" class="invisible" data-toggle="appear">
-                <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                <a class="block block-rounded block-link-pop" href="/workplace">
                     <div
                         class="block-content block-content-full d-flex align-items-center justify-content-between text-primary">
                         <div>
@@ -46,7 +46,7 @@
                         </div>
                         <div class="ml-3 text-right">
                             <p class="text-muted mb-0">
-                                Repartie voltooid
+                                Reparatie voltooid
                             </p>
                             <p class="font-size-h3 mb-0">
                                 {{this.counters.repairsFinished}}
@@ -185,8 +185,16 @@
             this.getBicyclesRequestedRepair();
             this.getBicyclesCurrentlyInRepair();
             this.getCounters();
+            this.interval();
         },
         methods: {
+            interval(){
+                setInterval(()=>{
+                    this.getBicyclesRequestedRepair();
+                    this.getBicyclesCurrentlyInRepair();
+                    this.getCounters();
+                },300000);
+            },
             getBicyclesRequestedRepair(){
                 axios.get('axios/repair/bicycles/repair-granted').then(response => {
                     this.bicyclesRequestedRepair = response.data;

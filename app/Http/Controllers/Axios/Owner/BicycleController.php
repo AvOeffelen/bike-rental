@@ -22,7 +22,7 @@ class BicycleController extends Controller
 
     public function paginateBicycles()
     {
-        $bicycles = Bicycle::paginate(10);
+        $bicycles = Bicycle::with('Location')->paginate(10);
         return $bicycles;
     }
 

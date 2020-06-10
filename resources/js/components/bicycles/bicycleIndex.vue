@@ -34,10 +34,11 @@
                     <table class="table table-striped table-borderless table-vcenter">
                         <thead class="bg-primary-dark text-light">
                         <tr>
-                            <th style="width: 33%;">Frame number</th>
-                            <th class="d-none d-sm-table-cell">available</th>
-                            <th class="d-none d-sm-table-cell">in repair</th>
-                            <th style="width: 33%;" class="d-sm-table-cell">leased</th>
+                            <th class="d-none d-sm-table-cell">Frame number</th>
+                            <th class="d-none d-sm-table-cell">Beschikbaarheid</th>
+                            <th class="d-none d-sm-table-cell">Reparatie status</th>
+                            <th class="d-sm-table-cell">Locatie</th>
+                            <th class="d-sm-table-cell">Leased</th>
                             <th style="width: 200px;" class="text-center">Actions</th>
                         </tr>
                         </thead>
@@ -49,10 +50,13 @@
                                               class="form-control form-control"></b-form-input>
                             </td>
                             <td class="d-none d-sm-table-cell">
-                                Available
+                                Beschikbaar
                             </td>
                             <td class="d-none d-sm-table-cell">
-                                Not in repair
+                                Niet in reparatie
+                            </td>
+                            <td>
+                                -
                             </td>
                             <td>
                                 -
@@ -84,13 +88,17 @@
                                                    :options="options"></b-form-select>
                                 </div>
                                 <div v-else>
-                                    <span v-if="bicycle.available == 0">Not available</span>
-                                    <span v-else>Available</span>
+                                    <span v-if="bicycle.available == 0">Niet beschikbaar</span>
+                                    <span v-else>Beschikbaar</span>
                                 </div>
                             </td>
                             <td class="d-none d-sm-table-cell">
-                                <span v-if="bicycle.in_repair == 0">Not in repair</span>
-                                <span v-else>In repair</span>
+                                <span v-if="bicycle.in_repair == 0">Niet in reparatie</span>
+                                <span v-else>In reparatie</span>
+                            </td>
+                            <td class="d-none d-sm-table-cell">
+                                <span v-if="bicycle.location == null">-</span>
+                                <span v-else>{{bicycle.location.name}}</span>
                             </td>
                             <td class="d-none d-sm-table-cell">
                                 <div v-if="bicycle.lease_start && bicycle.lease_end == null">
