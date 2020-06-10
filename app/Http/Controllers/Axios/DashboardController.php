@@ -59,7 +59,7 @@ class DashboardController extends Controller
             $locations = Location::all();
         }
 
-        $repairs = BicycleRepair::all();
+        $repairs = BicycleRepair::where('granted',1)->where('in_progress', 0)->where('is_finished', 0)->get();
         $repairsFinished = BicycleRepair::where('is_finished', 1)->get();
         $repairsCurrently = BicycleRepair::where('in_progress',1)->get();
 

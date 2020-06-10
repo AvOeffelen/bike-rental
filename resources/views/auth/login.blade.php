@@ -42,7 +42,6 @@
                 </div>
             </div>
             <!-- END Main Section -->
-
             <!-- Meta Info Section -->
             <div class="hero-static col-md-6 d-none d-md-flex align-items-md-center justify-content-md-center text-md-center">
                 <div class="p-3">

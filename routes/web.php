@@ -87,7 +87,7 @@ Route::group(['prefix' => 'axios/repair', 'namespace' => 'Axios'], function () {
     Route::post('/bicycle/start-repair','BicycleRepairController@startRepair')->name('axios.get.start.repair');
     Route::post('/bicycle/finish-repair','BicycleRepairController@finishRepair')->name('axios.get.finish.repair');
     Route::get('/bicycles/repair-granted','BicycleRepairController@getBicyclesRepairGranted')->name('axios.bicycles.repair.granted');
-    Route::get('/bicycles/repair-in-progress/get','BicycleRepairControler@getBicyclesCurrentlyInRepair')->name('axios.bicycles.current.in.repair');
+    Route::get('/bicycles/repair-in-progress/get','BicycleRepairController@getBicyclesCurrentlyInRepair')->name('axios.bicycles.current.in.repair');
 });
 Route::group(['prefix' => 'axios/location','namespace'=> 'Axios','middleware' => ['web']], function () {
     Route::get('get','LocationController@getLocations')->name('location.show');
