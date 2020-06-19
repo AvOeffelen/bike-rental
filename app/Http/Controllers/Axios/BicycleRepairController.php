@@ -170,11 +170,19 @@ class BicycleRepairController extends Controller
         $helperArray = [];
         $helperArray['id'] = $bicycle->id;
         $helperArray['title'] = 'Fiets verhuurd';
-        $helperArray['description'] = 'Fiets word verhuurd aan locatie: ' .
-            $bicycle->location->name .
-            '. periode start op ' .
-            $bicycle->lease_start->format('d-m-Y') .
-            ' en eindigd op ' . $bicycle->lease_end->format('d-m-Y') . '.';
+        if($start == null && $end === null) {
+
+            $helperArray['description'] = 'Fiets word verhuurd aan locatie: ' .
+                $bicycle->location->name .
+                '. Lease periode is onbekend.';
+        }else {
+
+            $helperArray['description'] = 'Fiets word verhuurd aan locatie: ' .
+                $bicycle->location->name .
+                '. periode start op ' .
+                $bicycle->lease_start->format('d-m-Y') .
+                ' en eindigd op ' . $bicycle->lease_end->format('d-m-Y') . '.';
+        }
 
         $bikeHelper = new BicycleHistoryHelper();
         $bikeHelper->storeBicycleEvent($helperArray);
