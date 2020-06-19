@@ -68,7 +68,6 @@ class LocationController extends Controller
                 $bicycles->push($bicycle);
             }
         }
-
         return $this->paginate($bicycles, 10);
     }
 
