@@ -642,6 +642,7 @@
                     this.bicycles.data.splice(key, 1);
                     if (this.bicycles.data.length == 0) {
                         this.getBicycles();
+                        this.getAllBicycles();
                     }
                 });
             },
