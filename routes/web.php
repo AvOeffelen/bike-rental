@@ -97,3 +97,7 @@ Route::group(['prefix' => 'axios/location','namespace'=> 'Axios','middleware' =>
     Route::post('/link','LocationController@linkLocation')->name('axios.location.link');
     Route::delete('/{location}/delete','LocationController@removeLocation')->name('axios.location.remove');
 });
+Route::group(['prefix' => 'axios/','namespace'=> 'Axios','middleware' => ['web']], function () {
+    Route::get('/date/3-months/get','DateController@get3Months')->name('axios.3months.get');
+    Route::get('/date/today/get','DateController@getToday')->name('axios.today.get');
+});

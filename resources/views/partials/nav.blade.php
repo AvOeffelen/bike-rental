@@ -18,11 +18,11 @@
                 <!-- Toggle Sidebar Style -->
                 <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
                 <!-- Class Toggle, functionality initialized in Helpers.coreToggleClass() -->
-                <a class="js-class-toggle text-white-75" data-target="#sidebar-style-toggler"
-                   data-class="fa-toggle-off fa-toggle-on" data-toggle="layout" data-action="sidebar_style_toggle"
-                   href="javascript:void(0)">
-                    <i class="fa fa-toggle-off" id="sidebar-style-toggler"></i>
-                </a>
+{{--                <a class="js-class-toggle text-white-75" data-target="#sidebar-style-toggler"--}}
+{{--                   data-class="fa-toggle-off fa-toggle-on" data-toggle="layout" data-action="sidebar_style_toggle"--}}
+{{--                   href="javascript:void(0)">--}}
+{{--                    <i class="fa fa-toggle-off" id="sidebar-style-toggler"></i>--}}
+{{--                </a>--}}
                 <!-- END Toggle Sidebar Style -->
 
                 <!-- Close Sidebar, Visible only on mobile screens -->

@@ -12,8 +12,9 @@
                 <table class="table table-striped table-borderless table-vcenter">
                     <thead class="bg-primary-dark text-light">
                     <tr>
-                        <th style="width: 33%;">Frame number</th>
-                        <th class="d-none d-sm-table-cell">description</th>
+                        <th style="width: 33%;">Frame nummer</th>
+                        <th class="d-none d-sm-table-cell">Omschrijving</th>
+                        <th class="d-none d-sm-table-cell">Locatie</th>
                         <th style="width: 200px;" class="text-center">Actions</th>
                     </tr>
                     </thead>
@@ -32,6 +33,11 @@
                                     <template v-slot:title>Omschrijving</template>
                                     {{bicycle.description}}
                                 </b-popover>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <span>{{bicycle.bicycle.location.name}}</span>
                             </div>
                         </td>
                         <td class="text-right">

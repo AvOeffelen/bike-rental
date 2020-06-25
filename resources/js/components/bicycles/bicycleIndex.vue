@@ -4,6 +4,12 @@
             <div class="block-header block-header-default">
                 <h3 class="block-title">Bicycles</h3>
             </div>
+            <div class="block-content block-content-full block-content-sm bg-body-dark">
+                <b-form-input
+                    v-model="searchString" type="text" class="form-control form-control-alt" placeholder="Zoek fiets.."
+                    @input="searching">
+                    <i class="fa fa-times"></i></b-form-input>
+            </div>
             <div class="block-content">
                 <div v-if="this.loading == true" class="text-center">
                     <div class="spinner-grow text-primary" role="status">
@@ -31,87 +37,89 @@
                     </div>
                     <div v-else>
                     </div>
-                    <table class="table table-striped table-borderless table-vcenter">
-                        <thead class="bg-primary-dark text-light">
-                        <tr>
-                            <th class="d-none d-sm-table-cell">Frame number</th>
-                            <th class="d-none d-sm-table-cell">Beschikbaarheid</th>
-                            <th class="d-none d-sm-table-cell">Reparatie status</th>
-                            <th class="d-sm-table-cell">Locatie</th>
-                            <th class="d-sm-table-cell">Leased</th>
-                            <th style="width: 200px;" class="text-center">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>
-                                <b-form-input v-model="new_bicycle.framenumber" placeholder="12345DF459" type="text"
-                                              autocomplete="false"
-                                              class="form-control form-control"></b-form-input>
-                            </td>
-                            <td class="d-none d-sm-table-cell">
-                                Beschikbaar
-                            </td>
-                            <td class="d-none d-sm-table-cell">
-                                Niet in reparatie
-                            </td>
-                            <td>
-                                -
-                            </td>
-                            <td>
-                                -
-                            </td>
-                            <td class="text-right">
-                                <b-button variant="light" size="sm" class="btn-light" @click="submitForm(bicycle)">
-                                    <i class="fa fa-fw fa-check text-primary"></i>
-                                </b-button>
-                            </td>
-                        </tr>
-                        <tr v-for="(bicycle,key) in this.bicycles.data" :key="key">
-                            <td>
-                                <div v-if="isEditing.currently == true && isEditing.key == key">
-                                    <b-form-input v-model="bicycle.framenumber" placeholder="12345DF459" type="text"
+                    <div v-if="showSearchResult == false">
+
+                        <table class="table table-striped table-borderless table-vcenter">
+                            <thead class="bg-primary-dark text-light">
+                            <tr>
+                                <th class="d-none d-sm-table-cell">Frame number</th>
+                                <th class="d-none d-sm-table-cell">Beschikbaarheid</th>
+                                <th class="d-none d-sm-table-cell">Reparatie status</th>
+                                <th class="d-sm-table-cell">Locatie</th>
+                                <th class="d-sm-table-cell">Leased</th>
+                                <th style="width: 200px;" class="text-center">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <b-form-input v-model="new_bicycle.framenumber" placeholder="12345DF459" type="text"
+                                                  autocomplete="false"
                                                   class="form-control form-control"></b-form-input>
-                                </div>
-                                <div v-else>
-                                    <span>{{bicycle.framenumber}}</span>
-                                </div>
-                            </td>
-                            <td class="d-none d-sm-table-cell">
-                                <div v-if="isEditing.currently == true && isEditing.key == key">
-                                    <b-form-select v-model="bicycle.available"
-                                                   v-if="bicycle.lease_start && bicycle.lease_end == null"
-                                                   class="custom-select form-control form-control"
-                                                   :options="options"></b-form-select>
-                                    <b-form-select v-model="bicycle.available" v-else
-                                                   class="custom-select form-control form-control disabled" disabled
-                                                   :options="options"></b-form-select>
-                                </div>
-                                <div v-else>
-                                    <span v-if="bicycle.available == 0">Niet beschikbaar</span>
-                                    <span v-else>Beschikbaar</span>
-                                </div>
-                            </td>
-                            <td class="d-none d-sm-table-cell">
-                                <span v-if="bicycle.in_repair == 0">Niet in reparatie</span>
-                                <span v-else>In reparatie</span>
-                            </td>
-                            <td class="d-none d-sm-table-cell">
-                                <span v-if="bicycle.location == null">-</span>
-                                <span v-else>{{bicycle.location.name}}</span>
-                            </td>
-                            <td class="d-none d-sm-table-cell">
-                                <div v-if="bicycle.lease_start && bicycle.lease_end == null">
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    Beschikbaar
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    Niet in reparatie
+                                </td>
+                                <td>
                                     -
-                                </div>
-                                <div v-else>
+                                </td>
+                                <td>
+                                    -
+                                </td>
+                                <td class="text-right">
+                                    <b-button variant="light" size="sm" class="btn-light" @click="submitForm(bicycle)">
+                                        <i class="fa fa-fw fa-check text-primary"></i>
+                                    </b-button>
+                                </td>
+                            </tr>
+                            <tr v-for="(bicycle,key) in this.bicycles.data" :key="key">
+                                <td>
                                     <div v-if="isEditing.currently == true && isEditing.key == key">
-                                        <div v-if="bicycle.lease_start && bicycle.lease_end != null">
+                                        <b-form-input v-model="bicycle.framenumber" placeholder="12345DF459" type="text"
+                                                      class="form-control form-control"></b-form-input>
+                                    </div>
+                                    <div v-else>
+                                        <span>{{bicycle.framenumber}}</span>
+                                    </div>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    <div v-if="isEditing.currently == true && isEditing.key == key">
+                                        <b-form-select v-model="bicycle.available"
+                                                       v-if="bicycle.lease_start && bicycle.lease_end == null"
+                                                       class="custom-select form-control form-control"
+                                                       :options="options"></b-form-select>
+                                        <b-form-select v-model="bicycle.available" v-else
+                                                       class="custom-select form-control form-control disabled" disabled
+                                                       :options="options"></b-form-select>
+                                    </div>
+                                    <div v-else>
+                                        <span v-if="bicycle.available == 0">Niet beschikbaar</span>
+                                        <span v-else>Beschikbaar</span>
+                                    </div>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    <span v-if="bicycle.in_repair == 0">Niet in reparatie</span>
+                                    <span v-else>In reparatie</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    <span v-if="bicycle.location == null">-</span>
+                                    <span v-else>{{bicycle.location.name}}</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    <div v-if="bicycle.lease_start && bicycle.lease_end == null">
+                                        -
+                                    </div>
+                                    <div v-else>
+                                        <div v-if="isEditing.currently == true && isEditing.key == key">
+                                            <div v-if="bicycle.lease_start && bicycle.lease_end != null">
                                         <span class="date-pickrr">
                                         {{bicycle.lease_start}}
                                         </span>
-                                            -
-                                            <span class="date-pickrr">
+                                                -
+                                                <span class="date-pickrr">
                                             <flat-pickr
                                                 v-model="bicycle.lease_end"
                                                 :config="config"
@@ -119,59 +127,193 @@
                                                 placeholder="Select date"
                                                 name="lease_end"></flat-pickr>
                                         </span>
+                                            </div>
+                                            <div v-else>
+                                                <span>-</span>
+                                            </div>
                                         </div>
-                                        <div v-else>
-                                            <span>-</span>
-                                        </div>
-                                    </div>
-                                    <span v-else>
+                                        <span v-else>
                                     {{bicycle.lease_start}} - {{bicycle.lease_end}}
                                 </span>
-                                </div>
-                            </td>
-                            <td class="text-right">
-                                <b-button variant="light" size="sm" class="btn-light" v-if="bicycle.available == 1"
-                                          @click="initTransferBicycleModal(bicycle,key)">
-                                    <i class="fa fa-fw fa-exchange-alt text-primary"></i>
-                                </b-button>
-                                <b-button variant="light" size="sm" class="btn-light" v-else
-                                          @click="initTransferBicycleBackModal(bicycle,key)">
-                                    <i class="fa fa-fw fa-arrow-left text-primary"></i>
-                                </b-button>
-                                <b-button variant="light" size="sm" class="btn-light"
-                                          @click="updateBicycle(bicycle,key)"
-                                          v-if="isEditing.currently == true && isEditing.key == key">
-                                    <i class="fa fa-fw fa-check text-primary"></i>
-                                </b-button>
-                                <b-button variant="light" size="sm" class="btn-light"
-                                          @click="initEditBicycle(bicycle,key)"
-                                          v-else>
-                                    <i class="fa fa-fw fa-pencil-alt text-primary"></i>
-                                </b-button>
-                                <b-button variant="light" size="sm" class="btn-light"
-                                          @click="cancelEditing(bicycle,key)"
-                                          v-if="isEditing.currently == true && isEditing.key == key">
-                                    <i class="fa fa-fw fa-times text-danger"></i>
-                                </b-button>
-                                <b-button variant="light" size="sm" class="btn-light"
-                                          @click="removeBicycle(bicycle,key)"
-                                          v-else>
-                                    <i class="fa fa-fw fa-trash text-danger"></i>
-                                </b-button>
-                                <!--                            <b-button variant="light" size="sm" class="btn-light">-->
-                                <!--                                <i class="fa fa-fw fa-search text-primary"></i>-->
-                                <!--                            </b-button>-->
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <div v-if="this.bicycles == null"></div>
-                    <pagination v-else
-                                class="pagination-margin"
-                                size="small"
-                                :data="bicycles"
-                                @pagination-change-page="getBicycles">
-                    </pagination>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <b-button variant="light" size="sm" class="btn-light" v-if="bicycle.available == 1"
+                                              @click="initTransferBicycleModal(bicycle,key)">
+                                        <i class="fa fa-fw fa-exchange-alt text-primary"></i>
+                                    </b-button>
+                                    <b-button variant="light" size="sm" class="btn-light" v-else
+                                              @click="initTransferBicycleBackModal(bicycle,key)">
+                                        <i class="fa fa-fw fa-arrow-left text-primary"></i>
+                                    </b-button>
+                                    <b-button variant="light" size="sm" class="btn-light"
+                                              @click="updateBicycle(bicycle,key)"
+                                              v-if="isEditing.currently == true && isEditing.key == key">
+                                        <i class="fa fa-fw fa-check text-primary"></i>
+                                    </b-button>
+                                    <b-button variant="light" size="sm" class="btn-light"
+                                              @click="initEditBicycle(bicycle,key)"
+                                              v-else>
+                                        <i class="fa fa-fw fa-pencil-alt text-primary"></i>
+                                    </b-button>
+                                    <b-button variant="light" size="sm" class="btn-light"
+                                              @click="cancelEditing(bicycle,key)"
+                                              v-if="isEditing.currently == true && isEditing.key == key">
+                                        <i class="fa fa-fw fa-times text-danger"></i>
+                                    </b-button>
+                                    <b-button variant="light" size="sm" class="btn-light"
+                                              @click="removeBicycle(bicycle,key)"
+                                              v-else>
+                                        <i class="fa fa-fw fa-trash text-danger"></i>
+                                    </b-button>
+                                    <!--                            <b-button variant="light" size="sm" class="btn-light">-->
+                                    <!--                                <i class="fa fa-fw fa-search text-primary"></i>-->
+                                    <!--                            </b-button>-->
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div v-if="this.bicycles == null"></div>
+                        <pagination v-else
+                                    class="pagination-margin"
+                                    size="small"
+                                    :data="bicycles"
+                                    @pagination-change-page="getBicycles">
+                        </pagination>
+                    </div>
+                    <div v-else>
+                        <table class="table table-striped table-borderless table-vcenter">
+                            <thead class="bg-primary-dark text-light">
+                            <tr>
+                                <th class="d-none d-sm-table-cell">Frame number</th>
+                                <th class="d-none d-sm-table-cell">Beschikbaarheid</th>
+                                <th class="d-none d-sm-table-cell">Reparatie status</th>
+                                <th class="d-sm-table-cell">Locatie</th>
+                                <th class="d-sm-table-cell">Leased</th>
+                                <th style="width: 200px;" class="text-center">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!--                            Editting row-->
+                            <tr v-if="isEditing.currently == true">
+                                <td>
+                                    <b-form-input v-model="editingBicycle.framenumber" placeholder="12345DF459"
+                                                  type="text"
+                                                  autocomplete="false"
+                                                  class="form-control form-control"></b-form-input>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    Beschikbaar
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    Niet in reparatie
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    <span v-if="editingBicycle.location == null">-</span>
+                                    <span v-else>{{editingBicycle.location.name}}</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    <div v-if="editingBicycle.lease_start && editingBicycle.lease_end == null">
+                                        -
+                                    </div>
+                                    <div v-else>
+                                        <div v-if="isEditing.currently == true && isEditing.key == index">
+                                            <div v-if="editingBicycle.lease_start && editingBicycle.lease_end != null">
+                                        <span class="date-pickrr">
+                                        {{bicycle.lease_start}}
+                                        </span>
+                                                -
+                                                <span class="date-pickrr">
+                                            <flat-pickr
+                                                v-model="editingBicycle.lease_end"
+                                                :config="config"
+                                                class="form-control"
+                                                placeholder="Select date"
+                                                name="lease_end"></flat-pickr>
+                                        </span>
+                                            </div>
+                                            <div v-else>
+                                                <span>-</span>
+                                            </div>
+                                        </div>
+                                        <span v-else>
+                                    {{editingBicycle.lease_start}} - {{editingBicycle.lease_end}}
+                                </span>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <b-button variant="light" size="sm" class="btn-light"
+                                              @click="updateBicycle(editingBicycle)">
+                                        <i class="fa fa-fw fa-check text-primary"></i>
+                                    </b-button>
+                                    <b-button variant="light" size="sm" class="btn-light"
+                                              @click="cancelEditing(bicycle)"
+                                              v-if="isEditing.currently == true">
+                                        <i class="fa fa-fw fa-times text-danger"></i>
+                                    </b-button>
+                                </td>
+                            </tr>
+                            <tr v-for="(bicycle,index) in filteredBicycles" :key="index">
+                                <td>
+                                    <span>{{bicycle.framenumber}}</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    <span v-if="bicycle.available == 0">Niet beschikbaar</span>
+                                    <span v-else>Beschikbaar</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    <span v-if="bicycle.in_repair == 0">Niet in reparatie</span>
+                                    <span v-else>In reparatie</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    <span v-if="bicycle.location == null">-</span>
+                                    <span v-else>{{bicycle.location.name}}</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    <div v-if="bicycle.lease_start && bicycle.lease_end == null">
+                                        -
+                                    </div>
+                                    <div v-else>
+                                        {{bicycle.lease_start}} - {{bicycle.lease_end}}
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <b-button variant="light" size="sm" class="btn-light" v-if="bicycle.available == 1"
+                                              @click="initTransferBicycleModal(bicycle,index)">
+                                        <i class="fa fa-fw fa-exchange-alt text-primary"></i>
+                                    </b-button>
+                                    <b-button variant="light" size="sm" class="btn-light" v-else
+                                              @click="initTransferBicycleBackModal(bicycle,index)">
+                                        <i class="fa fa-fw fa-arrow-left text-primary"></i>
+                                    </b-button>
+                                    <b-button variant="light" size="sm" class="btn-light"
+                                              @click="updateBicycle(bicycle,index)"
+                                              v-if="isEditing.currently == true && isEditing.key == index">
+                                        <i class="fa fa-fw fa-check text-primary"></i>
+                                    </b-button>
+                                    <b-button variant="light" size="sm" class="btn-light"
+                                              @click="initEditBicycle(bicycle,index)"
+                                              v-else>
+                                        <i class="fa fa-fw fa-pencil-alt text-primary"></i>
+                                    </b-button>
+                                    <b-button variant="light" size="sm" class="btn-light"
+                                              @click="cancelEditing(bicycle,index)"
+                                              v-if="isEditing.currently == true && isEditing.key == index">
+                                        <i class="fa fa-fw fa-times text-danger"></i>
+                                    </b-button>
+                                    <b-button variant="light" size="sm" class="btn-light"
+                                              @click="removeBicycle(bicycle,index)"
+                                              v-else>
+                                        <i class="fa fa-fw fa-trash text-danger"></i>
+                                    </b-button>
+                                    <!--                            <b-button variant="light" size="sm" class="btn-light">-->
+                                    <!--                                <i class="fa fa-fw fa-search text-primary"></i>-->
+                                    <!--                            </b-button>-->
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -235,7 +377,7 @@
                     <label for="date-end">Eind datum</label>
                     <flat-pickr
                         v-model="bicycleTransferInformation.end"
-                        :config="config"
+                        :config="config2"
                         class="custom-select form-control form-control"
                         placeholder="Select date"
                         name="date">
@@ -275,8 +417,6 @@
         return {
             bicycle: null,
             location: null,
-            start: null,
-            end: null
         };
     }
 
@@ -289,7 +429,16 @@
         name: "bicycleIndex",
         data() {
             return {
+                editingBicycle: {},
                 config: {
+                    wrap: true, // set wrap to true only when using 'input-group'
+                    altFormat: 'd-m-Y',
+                    altInput: true,
+                    dateFormat: 'd-m-Y',
+                    defaultDate: "today",
+                    locale: Dutch,
+                },
+                config2: {
                     wrap: true, // set wrap to true only when using 'input-group'
                     altFormat: 'd-m-Y',
                     altInput: true,
@@ -325,19 +474,49 @@
                 },
                 locations: [],
                 cancelLeaseModal: false,
+                returnDate: null,
+                searchString: '',
+                showSearchResult: false,
+                bicyclesForSearch: {}
             };
+        },
+        computed: {
+            filteredBicycles: function () {
+                if(this.isEditing.currently == false){
+                    return this.bicyclesForSearch.filter((bicycle) => {
+                        let regex = new RegExp('(' + this.searchString + ')', 'i');
+                        if (bicycle.framenumber.match(regex) == null) {
+                            //    TODO:: Display error message if we want to.
+                        } else {
+                            return bicycle.framenumber.match(regex);
+                        }
+                    })
+                }
+            }
         },
         created() {
             setTimeout(() => {
                 this.loading = false;
                 this.getBicycles();
+                this.getAllBicycles();
                 this.getLocations();
                 this.getLocations();
+                this.get3MonthsInAdvance();
+                this.getToday();
             }, 1000);
         },
         mounted() {
         },
         methods: {
+            searching() {
+                if (this.searchString.length == 0) {
+                    console.log("not searching");
+                    this.showSearchResult = false;
+                } else {
+                    console.log("searching", this.searchString);
+                    this.showSearchResult = true;
+                }
+            },
             closeCancelLeaseModal() {
                 this.cancelLeaseModal = false;
                 Object.assign(this.bicycleTransferInformation, initialBikeTransferState());
@@ -396,7 +575,8 @@
                 let url = variables.post_bicycles;
                 axios.post(url, this.new_bicycle)
                     .then(response => {
-                        this.bicycles.data.push(response.data);
+                        this.getBicycles();
+                        this.getAllBicycles();
                         Object.assign(this.new_bicycle, initialState());
                         this.errors = [];
                     })
@@ -411,18 +591,24 @@
                 axios.get(url + '?page=' + page)
                     .then(response => {
                         this.bicycles = response.data;
+                        console.log(response.data);
                     });
             },
             initEditBicycle(bicycle, key) {
-                this.isEditing.currently = true;
-                this.isEditing.key = key;
-
+                this.filteredBicycles.splice(key, 1);
+                this.editingBicycle = bicycle;
                 this._beforeEditingCache = bicycle;
                 this._beforeEditingCache = Object.assign({}, bicycle);
+
+                this.isEditing.currently = true;
+                this.isEditing.key = key;
             },
             cancelEditing(bicycle, key) {
-
-                Object.assign(this.bicycles.data[key], this._beforeEditingCache);
+                if (this.searchString.length > 1) {
+                    this.getAllBicycles();
+                } else {
+                    Object.assign(this.bicycles.data[key], this._beforeEditingCache);
+                }
                 this._beforeEditingCache = null;
 
                 this.isEditing.currently = false;
@@ -440,6 +626,8 @@
                         this._beforeEditingCache = null;
                         this.isEditing.currently = false;
                         this.isEditing.key = null;
+                        this.getAllBicycles();
+                        this.getBicycles();
                     })
                     .catch(error => {
                         if (error.response.status === 422) {
@@ -455,6 +643,26 @@
                     if (this.bicycles.data.length == 0) {
                         this.getBicycles();
                     }
+                });
+            },
+            get3MonthsInAdvance() {
+                let url = '/axios/date/3-months/get';
+                axios.get(url).then(response => {
+                    console.log("3month", response.data);
+                    this.bicycleTransferInformation.end = response.data;
+                });
+            },
+            getAllBicycles() {
+                let url = '/axios/bicycle/get';
+                axios.get(url)
+                    .then(response => {
+                        this.bicyclesForSearch = response.data;
+                    })
+            },
+            getToday() {
+                let url = '/axios/date/today/get';
+                axios.get(url).then(response => {
+                    this.bicycleTransferInformation.start = response.data;
                 });
             },
         }
