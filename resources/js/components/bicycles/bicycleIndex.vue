@@ -642,8 +642,16 @@
                     this.bicycles.data.splice(key, 1);
                     if (this.bicycles.data.length == 0) {
                         this.getBicycles();
-                        this.getAllBicycles();
                     }
+                    if(this.searchString.length >1){
+                        this.filteredBicycles.splice(key, 1);
+                    }
+                    if(this.filteredBicycles.length == 0){
+                        this.showSearchResult = false;
+                        this.searchString = '';
+                    }
+                    this.getBicycles();
+                    this.getAllBicycles();
                 });
             },
             get3MonthsInAdvance() {
