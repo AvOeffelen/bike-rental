@@ -11,9 +11,9 @@
     <meta name="author" content="Bezorgfiets">
     <meta name="robots" content="noindex, nofollow">
 
-    <link rel="shortcut icon" href="{{ asset('media/favicons/favicon-64x64.png') }}">
-    <link rel="icon" sizes="192x192" type="image/png" href="{{ asset('media/favicons/favicon-192x192.png') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('media/favicons/favicon-192x192.png') }}">
+    <link rel="shortcut icon" href="{{ asset('media/favicons/favicon-32x32.png') }}">
+    <link rel="icon" sizes="192x192" type="image/png" href="{{ asset('media/favicons/favicon-96x96.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('media/favicons/favicon-96x96.png') }}">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
