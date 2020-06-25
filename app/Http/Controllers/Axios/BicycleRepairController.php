@@ -21,7 +21,7 @@ class BicycleRepairController extends Controller
 
     public function getBicyclesInRepair()
     {
-        $bicycles = BicycleRepair::where('granted',0)->where('is_finished',0)->with('Bicycle')->get();
+        $bicycles = BicycleRepair::where('granted',0)->where('is_finished',0)->with('Bicycle.Location')->get();
         return $bicycles;
     }
 

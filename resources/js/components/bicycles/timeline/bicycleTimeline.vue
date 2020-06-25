@@ -77,8 +77,6 @@
         methods: {
             getAllBicycles() {
                 let url = '/axios/bicycle/get';
-                console.log(url);
-
                 axios.get(url)
                     .then(response => {
                         this.bicycles = response.data;

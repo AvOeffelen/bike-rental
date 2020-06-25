@@ -16,7 +16,7 @@ class BicycleController extends Controller
 
     public function getBicycles()
     {
-        $bicycles = Bicycle::with('BicycleHistory')->get();
+        $bicycles = Bicycle::with('BicycleHistory')->with('Location')->get();
         return json_encode($bicycles);
     }
 
@@ -46,17 +46,28 @@ class BicycleController extends Controller
             'lease_end.after_or_equal' => 'Eind datum kan niet eerder zijn dan start datum'
         ];
 
-        $validatedData = $request->validate([
-            'framenumber' => 'required|min:1|max:25',
-            'lease_end' => 'required|sometimes|after_or_equal:lease_start',
-        ], $messages);
+        if($bicycle->lease_start != null ||  $bicycle->lease_end != null){
+            $validatedData = $request->validate([
+                'framenumber' => 'required|min:1|max:25',
+                'lease_end' => 'required|sometimes|after_or_equal:lease_start',
+            ], $messages);
 
+            $bicycle->framenumber = $request['framenumber'];
+            $bicycle->available = $request['available'];
+            $bicycle->in_repair = $request['in_repair'];
+            $bicycle->lease_end = Carbon::parse($request['lease_end'])->timestamp;
+            $bicycle->update();
 
-        $bicycle->framenumber = $request['framenumber'];
-        $bicycle->available = $request['available'];
-        $bicycle->in_repair = $request['in_repair'];
-        $bicycle->lease_end = Carbon::parse($request['lease_end'])->timestamp;
-        $bicycle->update();
+        }else {
+            $validatedData = $request->validate([
+                'framenumber' => 'required|min:1|max:25',
+            ], $messages);
+
+            $bicycle->framenumber = $request['framenumber'];
+            $bicycle->available = $request['available'];
+            $bicycle->in_repair = $request['in_repair'];
+            $bicycle->update();
+        }
 
         return $bicycle;
     }
