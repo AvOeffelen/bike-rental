@@ -382,6 +382,13 @@
                         placeholder="Select date"
                         name="date">
                     </flat-pickr>
+                    <flat-pickr
+                        v-model="bicycleTransferInformation.end"
+                        :config="config2"
+                        class="custom-select form-control form-control"
+                        placeholder="Select date"
+                        name="date">
+                    </flat-pickr>
                 </b-col>
             </b-row>
             <template v-slot:modal-footer>

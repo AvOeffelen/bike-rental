@@ -22,22 +22,24 @@
                     <tr v-for="(bicycle,key) in this.bicyclesRequestedRepair" :key="key">
                         <td>
                             <div>
-                                <span>{{bicycle.bicycle.framenumber}}</span>
+                                <span>{{ bicycle.bicycle.framenumber }}</span>
                             </div>
                         </td>
                         <td class="d-none d-sm-table-cell">
                             <div>
                                 <span
-                                    :id="`popover-description-${key}`">{{bicycle.description | truncate('35','...')}}</span>
+                                    :id="`popover-description-${key}`">{{
+                                        bicycle.description | truncate('35','...')
+                                    }}</span>
                                 <b-popover :target="`popover-description-${key}`" triggers="hover" placement="top">
                                     <template v-slot:title>Omschrijving</template>
-                                    {{bicycle.description}}
+                                    {{ bicycle.description }}
                                 </b-popover>
                             </div>
                         </td>
                         <td>
                             <div>
-                                <span>{{bicycle.bicycle.location.name}}</span>
+                                <span>{{ bicycle.bicycle.location.name }}</span>
                             </div>
                         </td>
                         <td class="text-right">
@@ -51,14 +53,14 @@
                 </table>
             </div>
         </div>
-        <b-modal v-model="acceptRepairRequestModal">
+        <b-modal v-model="acceptRepairRequestModal" @close="resetRepairRequestModal()">
             <b-row>
                 <b-col md="12">
                             <span>
                                 <div class="form-check">
                                     <span>
                                         <b-form-checkbox class="form-check-input" type="checkbox"
-                                                         v-model="replacement" id="no_contact_person"
+                                                         v-model="bicycle_info.replacement" id="no_contact_person"
                                                          label="Ik wil deze fiets vervangen" name="no_contact_person"
                                                          @change="replacementBicycle()">
                                             Ik wil de fiets die voor reparatie opgegeven is vervangen.
@@ -68,7 +70,7 @@
                             </span>
                 </b-col>
             </b-row>
-            <b-row class="pt-3" v-if="replacement == true">
+            <b-row class="pt-3" v-if="bicycle_info.replacement == true && bicycle_info.fixOnLocation == false">
                 <b-col>
                     <label for="select_bike">Selecteer fiets ter vervanging</label>
                     <multiselect v-model="bicycle_info.bicycle_replacement"
@@ -82,6 +84,32 @@
                     </multiselect>
                 </b-col>
             </b-row>
+            <b-row class="pt-3" v-if="bicycle_info.replacement == false">
+                <b-col>
+                    <div class="form-check">
+                        <span>
+                            <b-form-checkbox class="form-check-input" type="checkbox"
+                                             v-model="bicycle_info.fixOnLocation" id="fix_on_location"
+                                             label="Ik wil deze fiets vervangen" name="fix_on_location"
+                                             @change="fixedOnLocation()">
+                                De fiets word gerepareert op locatie.
+                            </b-form-checkbox>
+                        </span>
+                    </div>
+                </b-col>
+            </b-row>
+            <b-row v-if="bicycle_info.fixOnLocation == true && bicycle_info.replacement == false">
+                <b-col>
+                    <label for="select_bike">Omschrijving gedane reparatie.</label>
+                    <b-textarea v-model="bicycle_info.repair_description"
+                                class="form-control"
+                                id="example-textarea-input"
+                                name="example-textarea-input"
+                                rows="4"
+                                placeholder="Geef een korte omschrijving van de reparatie.">
+                    </b-textarea>
+                </b-col>
+            </b-row>
             <template v-slot:modal-footer>
                 <b-button size="danger" data-toggle="click-ripple" @click="closeModal">cancel</b-button>
                 <b-button size="alt-primary" data-toggle="click-ripple" @click="acceptRepair">accept</b-button>
@@ -91,66 +119,79 @@
 </template>
 
 <script>
-    import RequestRepair from "./requestRepair";
+import RequestRepair from "./requestRepair";
 
-    export default {
-        name: "repairIndex",
-        components: {RequestRepair},
-        data() {
-            return {
-                bicycles: [],
-                bicycle_info:{
-                    bicycle:null,
-                    bicycle_replacement:null,
-                },
-                bicyclesRequestedRepair: [],
-                acceptRepairRequestModal:false,
-                replacement:true
-            };
+export default {
+    name: "repairIndex",
+    components: {RequestRepair},
+    data() {
+        return {
+            bicycles: [],
+            bicycle_info: {
+                bicycle: null,
+                bicycle_replacement: null,
+                repair_description: null,
+                replacement: true,
+                fixOnLocation: false
+            },
+            bicyclesRequestedRepair: [],
+            acceptRepairRequestModal: false,
+        };
+    },
+    created() {
+        this.getBicyclesCurrentlyInRepair();
+        this.getBicycles();
+    },
+    methods: {
+        resetRepairRequestModal() {
+            this.bicycle_info.bicycle = null;
+            this.bicycle_info.bicycle_replacement = null;
+            this.bicycle_info.replacement = true;
+            this.bicycle_info.fixOnLocation = false;
         },
-        created() {
-            this.getBicyclesCurrentlyInRepair();
-            this.getBicycles();
+        fixedOnLocation() {
+            this.bicycle_info.fixOnLocation = !this.bicycle_info.fixOnLocation;
         },
-        methods: {
-            closeModal(){
-              this.replacement = true;
-              this.acceptRepairRequestModal = false;
-              this.bicycle_info.bicycle_replacement = null;
-            },
-            replacementBicycle(){
-                this.replacement = !this.replacement;
-                if(this.replacement == false){
-                    this.bicycle_info.bicycle_replacement = null;
-                }
-            },
-            acceptRepairModal(bicycle){
-                this.acceptRepairRequestModal = true;
-                this.bicycle_info.bicycle = bicycle;
-            },
-            acceptRepair() {
-                axios.post('axios/repair/accept', this.bicycle_info).then(response => {
-                    this.getBicyclesCurrentlyInRepair();
-                    this.closeModal();
-                });
-            },
-            // getBicycles() {
-            //     axios.get('axios/bicycle/list/get').then(response => {
-            //         this.bicycles = response.data;
-            //     });
-            // },
-            getBicyclesCurrentlyInRepair() {
-                axios.get('axios/repair/in-repair/get').then(response => {
-                    this.bicyclesRequestedRepair = response.data;
-                });
-            },
-            getBicycles(){
-                axios.get('/axios/bicycle/available/get').then(response => {
-                   this.bicycles = response.data;
-                });
+        closeModal() {
+            this.bicycle_info.replacement = true;
+            this.acceptRepairRequestModal = false;
+            this.bicycle_info.bicycle_replacement = null;
+        },
+        replacementBicycle() {
+            this.bicycle_info.replacement = !this.bicycle_info.replacement;
+            if (this.bicycle_info.replacement == false) {
+                this.bicycle_info.bicycle_replacement = null;
             }
         },
-    }
+        acceptRepairModal(bicycle) {
+            this.acceptRepairRequestModal = true;
+            this.bicycle_info.bicycle = bicycle;
+        },
+        acceptRepair() {
+            axios.post('axios/repair/accept', this.bicycle_info).then(response => {
+                this.replacement = true;
+                this.fixOnLocation = false;
+                this.getBicyclesCurrentlyInRepair();
+                this.closeModal();
+            });
+        },
+        // getBicycles() {
+        //     axios.get('axios/bicycle/list/get').then(response => {
+        //         this.bicycles = response.data;
+        //     });
+        // },
+        getBicyclesCurrentlyInRepair() {
+            axios.get('axios/repair/in-repair/get').then(response => {
+                this.bicyclesRequestedRepair = response.data;
+            });
+        },
+        getBicycles() {
+            axios.get('/axios/bicycle/available/get').then(response => {
+                this.bicycles = response.data;
+            });
+        }
+    },
+}
 </script>
 
 <style scoped>

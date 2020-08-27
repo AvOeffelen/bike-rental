@@ -32,34 +32,64 @@ class BicycleRepairController extends Controller
         return $bicycles;
     }
 
+    //TODO:: check this function. This might need a rework.
     public function acceptRequest(Request $request)
     {
 
         $requestBike = BicycleRepair::where('id',$request['bicycle']['id'])->first();
 
-        $requestBike->granted = 1;
-        $requestBike->update();
-
         $bike = $requestBike->Bicycle;
 
+        $helperArray = [];
 
+        $location = Location::where('is_workplace',1)->first();
 
-        if($request['bicycle_replacement'] !== null){
+        if($request['replacement'] === true && $request['fixOnLocation'] === false ){
 
             $replacementBicycle = Bicycle::where('id',$request['bicycle_replacement']['id'])->first();
             $this->ReplaceBicycle($replacementBicycle,$bike->location_id,$bike->lease_start,$bike->lease_end);
+
+            $bike->lease_start = null;
+            $bike->lease_end = null;
+
+            $bike->location_id = $location->id;
+            $requestBike->granted = 1;
+
+            $helperArray['id'] = $bike->id;
+            $helperArray['title'] = 'Aanvraag reparatie is geaccepteerd.';
+            $helperArray['description'] = "Omschrijving klant: \"". $request['description'] . "\". De fiets word mee genomen naar de volgende locatie. " . $location->name. ".";
+
+            $requestBike->update();
+            $bike->update();
+
+        } else if($request['replacement'] === false && $request['fixOnLocation'] === true ){
+            $requestBike->is_finished = 1;
+            $requestBike->finished_at = Carbon::parse(Carbon::now()->timestamp);
+
+            $bike->requested_repair = 0;
+
+            $helperArray['id'] = $bike->id;
+            $helperArray['title'] = 'Aanvraag reparatie is geaccepteerd.';
+            $helperArray['description'] =
+                "Omschrijving klant: \"". $request['bicycle']['description'] .
+                "\". De fiets is ter plaatse gerepareerd. De monteur heeft het volgende geschreven: \""
+                . $request['repair_description'] . "\" ";
+
+
+            $requestBike->update();
+            $bike->update();
+
+        } else {
+            $helperArray['id'] = $bike->id;
+            $helperArray['title'] = 'Aanvraag reparatie is geaccepteerd.';
+            $helperArray['description'] = "Omschrijving klant: \"". $request['description'] . "\". De fiets word mee genomen naar de volgende locatie. " . $location->name. ".";
+
+            $bike->location_id = $location->id;
+            $requestBike->granted = 1;
+
+            $requestBike->update();
+            $bike->update();
         }
-        $location = Location::where('is_workplace',1)->first();
-
-        $bike->location_id = $location->id;
-        $bike->lease_start = null;
-        $bike->lease_end = null;
-        $bike->update();
-
-        $helperArray = [];
-        $helperArray['id'] = $bike->id;
-        $helperArray['title'] = 'Aanvraag reparatie is geaccepteerd.';
-        $helperArray['description'] = "Omschrijving klant: \"". $request['description'] . "\". De fiets is verplaatst naar volgende locatie: " . $location->name. ".";
 
         $bikeHelper = new BicycleHistoryHelper();
         $bikeHelper->storeBicycleEvent($helperArray);
