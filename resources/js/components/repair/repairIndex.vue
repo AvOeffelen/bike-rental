@@ -39,7 +39,8 @@
                         </td>
                         <td>
                             <div>
-                                <span>{{ bicycle.bicycle.location.name }}</span>
+                                <span v-if="bicycle.bicycle.location != null">{{ bicycle.bicycle.location.name }}</span>
+                                <span v-else>-</span>
                             </div>
                         </td>
                         <td class="text-right">
@@ -175,11 +176,6 @@ export default {
                 this.closeModal();
             });
         },
-        // getBicycles() {
-        //     axios.get('axios/bicycle/list/get').then(response => {
-        //         this.bicycles = response.data;
-        //     });
-        // },
         getBicyclesCurrentlyInRepair() {
             axios.get('axios/repair/in-repair/get').then(response => {
                 this.bicyclesRequestedRepair = response.data;
